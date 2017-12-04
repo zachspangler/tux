@@ -53,7 +53,7 @@ try {
 				$reply->data = $company;
 			}
 		} else if(empty($companyCity) === false) {
-			$company = Company::getCompanyByCompanyCity($pdo, $companyCity);
+			$company = Company::getCompanyByCompanyCity($pdo, $companyCity)->toArray();
 			if($company !== null) {
 				$reply->data = $company;
 			}
@@ -63,7 +63,7 @@ try {
 				$reply->data = $company;
 			}
 		} else if(empty($companyName) === false) {
-			$company = Company::getCompanyByCompanyName($pdo, $companyName);
+			$company = Company::getCompanyByCompanyName($pdo, $companyName)->toArray();
 			if($company !== null) {
 				$reply->data = $company;
 			}
@@ -73,27 +73,29 @@ try {
 				$reply->data = $company;
 			}
 		} else if(empty($companyPostalCode) === false) {
-			$company = Company::getCompanyByCompanyPostalCode($pdo, $companyPostalCode);
+			$company = Company::getCompanyByCompanyPostalCode($pdo, $companyPostalCode)->toArray();
 			if($company !== null) {
 				$reply->data = $company;
 			}
 		} else if(empty($companyState) === false) {
-			$company = Company::getCompanyByCompanyState($pdo, $companyState);
+			$company = Company::getCompanyByCompanyState($pdo, $companyState)->toArray();
 			if($company !== null) {
 				$reply->data = $company;
 			}
 		}
-	}  else if ($method === "PUT") {
+	} else if($method === "POST" || $method === "PUT") {
 		//enforce that the XSRF token is in the header
 		verifyXsrf();
+
 		//enforce the user is signed in and only trying and only trying to edit their company
-		if(empty($_SESSION["company"]) === true || $_SESSION["company"]->getCompanyId()->toString() !== $id) {
+		if(empty($_SESSION["profile"]) === true || $_SESSION["profile"]->getCompanyId()->toString() !== $id) {
 			throw(new \InvalidArgumentException("You are not allowed to access this company", 403));
 		}
 		//decode the response from the front end
 		$requestContent = file_get_contents("php://input");
 		$requestObject = json_decode($requestContent);
-		//retrieve the profile to be updated
+
+		//retrieve the company to be updated
 		$company = Company::getCompanyByCompanyId($pdo, $id);
 		if($company === null) {
 			throw(new \RuntimeException("Company does not exist", 404));
@@ -126,32 +128,60 @@ try {
 		if(empty($requestObject->companyState) === true) {
 			throw(new \InvalidArgumentException("No company state present", 405));
 		}
+		//perform the actual put or post
+		if($method === "PUT") {
 
+			//retrieve the method to update
+			$company = Company::getCompanyByCompanyId($pdo, $id);
+			if($company === null) {
+				throw (new RuntimeException("Company does not exist.", 404));
+			}
+			//enforce the user is signed in and only trying to edit their own event
+			if(empty($_SESSION["profile"]) === true || $_SESSION["profile"]->getProfileId()->toString() !== $company->getCompanyProfileId()->toString()) {
+				throw(new \InvalidArgumentException("You are not allowed to edit this event", 403));
+			}
+			//set updated fields
+			$company->setCompanyAddress($requestObject->companyAddress);
+			$company->setCompanyCity($requestObject->companyCity);
+			$company->setCompanyEmail($requestObject->companyEmail);
+			$company->setCompanyName($requestObject->companyName);
+			$company->setCompanyPhone($requestObject->companyPhone);
+			$company->setCompanyPostalCode($requestObject->companyPostalCode);
+			$company->setCompanyState($requestObject->companyState);
+			$company->update($pdo);
 
-		//set updated fields
-		$company->setCompanyAddress($requestObject->companyAddress);
-		$company->setCompanyCity($requestObject->companyCity);
-		$company->setCompanyEmail($requestObject->companyEmail);
-		$company->setCompanyName($requestObject->companyName);
-		$company->setCompanyPhone($requestObject->companyPhone);
-		$company->setCompanyPostalCode($requestObject->companyPostalCode);
-		$company->setCompanyState($requestObject->companyState);
-		$company->update($pdo);
+			// update reply
+			$reply->message = "Profile information updated";
+		} else if ($method === "POST") {
+			// enforce that the user is signed in
+			if(empty($_SESSION["profile"]) === true) {
+				throw(new \InvalidArgumentException("you must be logged in to create a company", 403));
+			}
+			//enforce the end user has a JWT token
+			validateJwtHeader();
 
-		// update reply
-		$reply->message = "Profile information updated";
+			// create a new Company an insert it into the database
+			$company = new Company(generateUuidV4(), $requestObject->companyAddress, $requestObject->companyCity, $requestObject->companyEmail, $requestObject->companyHash,  $requestObject->companyName, $requestObject->companyPhone, $requestObject->companyPostalCode, $requestObject->companySalt, $requestObject->companyState);
+			$company->insert($pdo);
+
+			// update reply
+			$reply->message="Company created OK";
+		}
 	} else if ($method === "DELETE") {
 		//Verify XRSF token
 		verifyXsrf();
-		//validateJwtHeader();
+
+		//retrieve the company to be deleted
 		$profile = Company::getCompanyByCompanyId($pdo, $id);
 		if($profile === null) {
 			throw (new \RuntimeException("Company does not exist"));
 		}
+
 		//enforce the user is signed in and only trying to edit their own profile
 		if(empty($_SESSION["company"]) === true || $_SESSION["company"]->getCompanyId()->toString() !== $profile->getCompanyId()->toString()) {
 			throw(new \InvalidArgumentException("You are not allowed to access this company", 400));
 		}
+
 		//delete the profile from the database
 		$profile->delete($pdo);
 		$reply->message = "Company Deleted";
