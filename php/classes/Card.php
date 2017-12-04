@@ -734,7 +734,7 @@ class Card implements \JsonSerializable {
 	 * gets the card by wedding id
 	 *
 	 * @param \PDO $pdo $pdo PDO connection object
-	 * @param string $cardprofileId profile Id to search for
+	 * @param string $cardProfileId profile Id to search for
 	 * @return \SplFixedArray SplFixedArray of cards found or null if not found
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws \TypeError when a variable are not the correct data type
