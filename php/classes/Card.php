@@ -603,6 +603,174 @@ class Card implements \JsonSerializable {
 	}
 
 	/**
+	 * inserts this Card into mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
+	public function insert(\PDO $pdo): void {
+		// create query template
+		$query = "INSERT INTO card(cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, carcPant, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight) VALUES (:cardId, :cardProfileId, :cardWeddingId, :cardChest, :cardCoat, :cardComplete, :cardHeight, :cardNeck, :cardOutseam, :cardPant, :cardShirt, :cardShoeSize, :cardSleeve, :cardUnderarm, :cardWeight)";
+		$statement = $pdo->prepare($query);
+		$parameters = ["cardId" => $this->cardId->getBytes(), "cardProfileId" => $this->cardProfileId->getBytes(), "cardWeddingId" => $this->cardWeddingId->getBytes(), "cardChest" => $this->cardChest, "cardCoat" => $this->cardCoat, "cardComplete" => $this->cardComplete, "cardHeight" => $this->cardHeight, "cardNeck" => $this->cardNeck, "cardOutseam" => $this->cardOutseam, "cardPant" => $this->cardPant, "cardShirt" => $this->cardShirt, "cardShoeSize" => $this->cardShoeSize, "cardSleeve" => $this->cardSleeve, "cardUnderarm" => $this->cardUnderarm, "cardWeight" => $this->cardWeight];
+		$statement->execute($parameters);
+	}
+
+	/**
+	 * deletes this Card from mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
+	public function delete(\PDO $pdo): void {
+		// create query template
+		$query = "DELETE FROM card WHERE cardId = :cardId";
+		$statement = $pdo->prepare($query);
+		// bind the member variables to the place holders in the template
+		$parameters = ["cardId" => $this->cardId->getBytes()];
+		$statement->execute($parameters);
+	}
+
+	/**
+	 * updates this Profile from mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 **/
+	public function update(\PDO $pdo): void {
+		// create query template
+		$query = "UPDATE card SET cardId = :cardId, cardProfileId = :cardProfileId, cardWeddingId = :cardWeddingId, cardChest = :cardChest, cardCoat= :cardCoat, cardComplete = :cardComplete, cardHeight = :cardHeight, cardNeck = :cardNeck, cardOutseam = :cardOutseam, cardPant = :cardPant, cardShirt = :cardShirt, cardShoeSize = :cardShoeSize, cardSleeve = :cardSleeve, cardUnderarm = :cardUnderarm, cardWeight = :cardWeight WHERE cardId = :cardId";
+		$statement = $pdo->prepare($query);
+
+		// bind the member variables to the place holders in the template
+		$parameters = ["cardId" => $this->cardId->getBytes(), "cardProfileId" => $this->cardProfileId->getBytes(), "cardWeddingId" => $this->cardWeddingId->getBytes(), "cardChest" => $this->cardChest, "cardCoat" => $this->cardCoat, "cardComplete" => $this->cardComplete, "cardHeight" => $this->cardHeight, "cardNeck" => $this->cardNeck, "cardOutseam" => $this->cardOutseam, "cardPant" => $this->cardPant, "cardShirt" => $this->cardShirt, "cardShoeSize" => $this->cardShoeSize, "cardSleeve" => $this->cardSleeve, "cardUnderarm" => $this->cardUnderarm, "cardWeight" => $this->cardWeight];
+		$statement->execute($parameters);
+	}
+
+	/**
+	 * gets the card by card id
+	 *
+	 * @param \PDO $pdo $pdo PDO connection object
+	 * @param string $cardId profile Id to search for
+	 * @return Card|null Card or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when a variable are not the correct data type
+	 **/
+	public static function getCardByCardId(\PDO $pdo, string $cardId):?Card {
+
+		// sanitize the card id before searching
+		try {
+			$cardId = self::validateUuid($cardId);
+		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		// create query template
+		$query = "SELECT cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, carcPant, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight FROM card WHERE cardId = :cardId";
+		$statement = $pdo->prepare($query);
+
+		// bind the card id to the place holder in the template
+		$parameters = ["cardId" => $cardId->getBytes()];
+		$statement->execute($parameters);
+
+		// grab the card from mySQL
+		try {
+			$card = null;
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
+			if($row !== false) {
+				$card = new Card($row["cardId"], $row["cardProfileId"], $row["cardWeddingId"], $row["cardChest"], $row["cardCoat"],  $row["cardComplete"], $row["cardHeight"], $row["cardNeck"], $row["cardOutseam"], $row["cardPant"], $row["cardShirt"], $row["cardShoeSize"], $row["cardSleeve"], $row["cardUnderarm"], $row["cardWeight"]);
+			}
+		} catch(\Exception $exception) {
+
+			// if the row couldn't be converted, rethrow it
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		return ($card);
+	}
+
+	/**
+	 * gets the card by profile id
+	 *
+	 * @param \PDO $pdo $pdo PDO connection object
+	 * @param string $cardprofileId profile Id to search for
+	 * @return \SplFixedArray SplFixedArray of cards found or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when a variable are not the correct data type
+	 **/
+	public static function getCardByProfileId(\PDO $pdo, string $cardProfileId):?Card {
+		// sanitize the profile id before searching
+		try {
+			$cardProfileId = self::validateUuid($cardProfileId);
+		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		// create query template
+		$query = "SELECT cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, carcPant, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight FROM card WHERE cardId = :cardId";
+		$statement = $pdo->prepare($query);
+
+		// bind the profile id to the place holder in the template
+		$parameters = ["cardProfileId" => $cardProfileId->getBytes()];
+		$statement->execute($parameters);
+
+		// build an array of cards
+		$cards = new \SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$card = new Card($row["cardId"], $row["cardProfileId"], $row["cardWeddingId"], $row["cardChest"], $row["cardCoat"],  $row["cardComplete"], $row["cardHeight"], $row["cardNeck"], $row["cardOutseam"], $row["cardPant"], $row["cardShirt"], $row["cardShoeSize"], $row["cardSleeve"], $row["cardUnderarm"], $row["cardWeight"]);
+				$cards[$cards->key()] = $card;
+				$cards->next();
+			} catch(\Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new \PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+		return ($cards);
+	}
+
+	/**
+	 * gets the card by wedding id
+	 *
+	 * @param \PDO $pdo $pdo PDO connection object
+	 * @param string $cardprofileId profile Id to search for
+	 * @return \SplFixedArray SplFixedArray of cards found or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when a variable are not the correct data type
+	 **/
+	public static function getCardByWeddingId(\PDO $pdo, string $cardWeddingId):?Card {
+		// sanitize the profile id before searching
+		try {
+			$cardWeddingId = self::validateUuid($cardWeddingId);
+		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		// create query template
+		$query = "SELECT cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, carcPant, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight FROM card WHERE cardId = :cardId";
+		$statement = $pdo->prepare($query);
+
+		// bind the profile id to the place holder in the template
+		$parameters = ["cardWeddingId" => $cardWeddingId->getBytes()];
+		$statement->execute($parameters);
+
+		// build an array of cards
+		$cards = new \SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$card = new Card($row["cardId"], $row["cardProfileId"], $row["cardWeddingId"], $row["cardChest"], $row["cardCoat"],  $row["cardComplete"], $row["cardHeight"], $row["cardNeck"], $row["cardOutseam"], $row["cardPant"], $row["cardShirt"], $row["cardShoeSize"], $row["cardSleeve"], $row["cardUnderarm"], $row["cardWeight"]);
+				$cards[$cards->key()] = $card;
+				$cards->next();
+			} catch(\Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new \PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+		return ($cards);
+	}
+
+	/**
 	 * formats the state variables for JSON serialization
 	 *
 	 * @return array resulting state variables to serialize
