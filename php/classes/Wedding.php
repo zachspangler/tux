@@ -209,6 +209,7 @@ class Wedding implements \JsonSerializable {
 		}
 		$this->weddingReturnByDate = $newWeddingReturnByDate;
 	}
+
 	/**
 	 * formats the state variables for JSON serialization
 	 *

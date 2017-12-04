@@ -426,6 +426,331 @@ class Company implements \JsonSerializable {
 	}
 
 	/**
+	 * inserts this Profile into mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
+	public function insert(\PDO $pdo): void {
+		// create query template
+		$query = "INSERT INTO company(companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, CompanySalt, CompanyState) VALUES (:companyId, :companyAddress, :companyCity, :companyEmail, :companyHash, :companyName, :companyPhone, :companyPostalCode, :companySalt, :companyState)";
+		$statement = $pdo->prepare($query);
+		$parameters = ["companyId" => $this->companyId->getBytes(), "companyAddress" => $this->companyAddress, "companyCity" => $this->companyCity, "companyEmail" => $this->companyEmail, "companyHash" => $this->companyHash, "companyName" => $this->companyName, "companyPhone" => $this->companyPhone, "companyPostalCode" => $this->companyPostalCode, "companySalt" => $this->companyState];
+		$statement->execute($parameters);
+	}
+
+	/**
+	 * deletes this Company from mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
+	public function delete(\PDO $pdo): void {
+		// create query template
+		$query = "DELETE FROM company WHERE companyId = :companyId";
+		$statement = $pdo->prepare($query);
+		// bind the member variables to the place holders in the template
+		$parameters = ["profileId" => $this->companyId->getBytes()];
+		$statement->execute($parameters);
+	}
+
+	/**
+	 * updates this Profile from mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 **/
+	public function update(\PDO $pdo): void {
+		// create query template
+		$query = "UPDATE company SET companyId = :companyId, companyAddress = :companyAddress, companyCity = :companyCity, companyEmail = :companyEmail, companyHash = :companyHash, companyName = :companyName, companyPhone = :companyPhone, companyPostalCode = :companyPostalCode, CompanySalt = :companySalt, CompanyState = :companyState WHERE companyId = :companyId";
+		$statement = $pdo->prepare($query);
+		// bind the member variables to the place holders in the template
+		$parameters = ["companyId" => $this->companyId->getBytes(), "companyAddress" => $this->companyAddress, "companyCity" => $this->companyCity, "companyEmail" => $this->companyEmail, "companyHash" => $this->companyHash, "companyName" => $this->companyName, "companyPhone" => $this->companyPhone, "companyPostalCode" => $this->companyPostalCode, "companySalt" => $this->companyState];
+		$statement->execute($parameters);
+	}
+
+
+	/**
+	 * gets the Company by company id
+	 *
+	 * @param \PDO $pdo $pdo PDO connection object
+	 * @param string $companyId profile Id to search for
+	 * @return Company|null Company or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when a variable are not the correct data type
+	 **/
+	public static function getCompanyByCompanyId(\PDO $pdo, string $companyId):?Company {
+		// sanitize the id before searching
+		try {
+			$companyId = self::validateUuid($companyId);
+		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		// create query template
+		$query = "SELECT companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, CompanySalt, CompanyState FROM company WHERE companyId = :companyId";
+		$statement = $pdo->prepare($query);
+		// bind the company id to the place holder in the template
+		$parameters = ["companyId" => $companyId->getBytes()];
+		$statement->execute($parameters);
+		// grab the company from mySQL
+		try {
+			$company = null;
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
+			if($row !== false) {
+				$company = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"]);
+			}
+		} catch(\Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		return ($company);
+	}
+
+	/**
+	 * gets the Company by City
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param string $companyCity is the search term that includes profile first namd and last name
+	 * @return \SplFixedArray SplFixedArray of Companies found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 **/
+	public static function getCompanyByCompanyCity(\PDO $pdo, string $companyCity): \SPLFixedArray {
+		// sanitize the city before searching
+		$companyCity = trim($companyCity);
+		$companyCity = filter_var($companyCity, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(empty($companyCity) === true) {
+			throw(new \PDOException("not a valid city"));
+		}
+
+		// create query template
+		$query = "SELECT companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, CompanySalt, CompanyState FROM company WHERE :companyCity LIKE CONCAT('%', REPLACE(:companyCity, ' ', '%'),'%')";
+		$statement = $pdo->prepare($query);
+
+		// bind the city to the place holder in the template
+		$companyCity = "companyCity";
+		$parameters = ["companyCity" => $companyCity];
+		$statement->execute($parameters);
+
+		// build an array of cities
+		$companyCities = new \SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$companyCity = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"]);
+				$companyCities[$companyCities->key()] = $companyCity;
+				$companyCities->next();
+			} catch(\Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new \PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+		return ($companyCities);
+	}
+
+	/**
+	 * gets the Company by email
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param string $companyEmail email to search for
+	 * @return Company|null Company or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 **/
+	public static function getCompanyByCompanyEmail(\PDO $pdo, string $companyEmail): ?Company {
+		// sanitize the email before searching
+		$companyEmail = trim($companyEmail);
+		$companyEmail = filter_var($companyEmail, FILTER_VALIDATE_EMAIL);
+		if(empty($companyEmail) === true) {
+			throw(new \PDOException("not a valid email"));
+		}
+		// create query template
+		$query = "SELECT companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, CompanySalt, CompanyState FROM company WHERE companyEmail = :companyEmail";
+		$statement = $pdo->prepare($query);
+		// bind the Company email to the place holder in the template
+		$parameters = ["companyEmail" => $companyEmail];
+		$statement->execute($parameters);
+		// grab the Company from mySQL
+		try {
+			$company = null;
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
+			if($row !== false) {
+				$company = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"]);
+			}
+		} catch(\Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		return ($company);
+	}
+
+	/**
+	 * gets the Company by Name
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param string $companyName is the search term that includes profile first namd and last name
+	 * @return \SplFixedArray SplFixedArray of Companies found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 **/
+	public static function getCompanyByCompanyName(\PDO $pdo, string $companyName): \SPLFixedArray {
+		// sanitize the name before searching
+		$companyName = trim($companyName);
+		$companyName = filter_var($companyName, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(empty($companyName) === true) {
+			throw(new \PDOException("not a valid name"));
+		}
+
+		// create query template
+		$query = "SELECT companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, CompanySalt, CompanyState FROM company WHERE :companyName LIKE CONCAT('%', REPLACE(:companyName, ' ', '%'),'%')";
+		$statement = $pdo->prepare($query);
+
+		// bind the profile to the place holder in the template
+		$companyName = "companyName";
+		$parameters = ["companyName" => $companyName];
+		$statement->execute($parameters);
+
+		// build an array of profiles
+		$companyNames = new \SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$companyName = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"]);
+				$companyNames[$companyNames->key()] = $companyName;
+				$companyNames->next();
+			} catch(\Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new \PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+		return ($companyNames);
+	}
+
+	/**
+	 * gets the Company by phone
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param string $companyPhone to search for
+	 * @return Company|null Company or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 **/
+	public static function getCompanyByCompanyPhone(\PDO $pdo, string $companyPhone): ?Company {
+		// sanitize the phone before searching
+		$companyPhone = trim($companyPhone);
+		$companyPhone = filter_var($companyPhone, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(empty($companyPhone) === true) {
+			throw(new \PDOException("not a valid phone number"));
+		}
+		// create query template
+		$query = "SELECT companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, CompanySalt, CompanyState FROM company WHERE companyPhone = :companyPhone";
+		$statement = $pdo->prepare($query);
+		// bind the profile email to the place holder in the template
+		$parameters = ["companyPhone" => $companyPhone];
+		$statement->execute($parameters);
+		// grab the Profile from mySQL
+		try {
+			$company = null;
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
+			if($row !== false) {
+				$$company = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"]);
+			}
+		} catch(\Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		return ($company);
+	}
+
+	/**
+	 * gets the Company by Postal Code
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param string $companyPostalCode is the search term that includes profile first namd and last name
+	 * @return \SplFixedArray SplFixedArray of Companies found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 **/
+	public static function getCompanyByCompanyPostalCode(\PDO $pdo, string $companyPostalCode): \SPLFixedArray {
+		// sanitize the city before searching
+		$companyPostalCode = trim($companyPostalCode);
+		$companyPostalCode = filter_var($companyPostalCode, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(empty($companyPostalCode) === true) {
+			throw(new \PDOException("not a valid city"));
+		}
+
+		// create query template
+		$query = "SELECT companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, CompanySalt, CompanyState FROM company WHERE :companyPostalCode LIKE CONCAT('%', REPLACE(:companyPostalCode, ' ', '%'),'%')";
+		$statement = $pdo->prepare($query);
+
+		// bind the postal code to the place holder in the template
+		$companyPostalCode = "companyPostalCode";
+		$parameters = ["companyPostalCode" => $companyPostalCode];
+		$statement->execute($parameters);
+
+		// build an array of companies with the same postal codes
+		$companyPostalCodes = new \SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$companyPostalCode = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"]);
+				$companyPostalCodes[$companyPostalCodes->key()] = $companyPostalCode;
+				$companyPostalCodes->next();
+			} catch(\Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new \PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+		return ($companyPostalCodes);
+	}
+
+	/**
+	 * gets the Company by State
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param string $companyState
+	 * @return \SplFixedArray SplFixedArray of Companies found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 **/
+	public static function getCompanyByCompanyState(\PDO $pdo, string $companyState): \SPLFixedArray {
+		// sanitize the state before searching
+		$companyState = trim($companyState);
+		$companyState = filter_var($companyState, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(empty($companyState) === true) {
+			throw(new \PDOException("not a valid state"));
+		}
+
+		// create query template
+		$query = "SELECT companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, CompanySalt, CompanyState FROM company WHERE :companyState LIKE CONCAT('%', REPLACE(:companyState, ' ', '%'),'%')";
+		$statement = $pdo->prepare($query);
+
+		// bind the postal code to the place holder in the template
+		$companyState = "companyState";
+		$parameters = ["companyState" => $companyState];
+		$statement->execute($parameters);
+
+		// build an array of companies with the same postal codes
+		$companyStates = new \SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$companyState = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"]);
+				$companyStates[$companyStates->key()] = $companyState;
+				$companyStates->next();
+			} catch(\Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new \PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+		return ($companyStates);
+	}
+	/**
 	 * formats the state variables for JSON serialization
 	 *
 	 * @return array resulting state variables to serialize
