@@ -1,0 +1,36 @@
+/**************
+*GLOBAL
+****************/
+
+body {
+	font-family: 'Lato Light',Helvetica,sans-serif;
+}
+
+/**************
+*HOW IT WORKS
+****************/
+.tux {
+	background-size: contain;
+	height: 75%;
+	width: auto;
+}
+
+
+/**************
+*TESTIMONIALS
+****************/
+#testimonials {
+	background-color: #E9E9E9;
+}
+
+.card-text {
+	font-size: .75em;
+	font-style: italic;
+}
+
+/**************
+*FOOTER
+****************/
+footer {
+	background-color: #E9E9E9;
+}
