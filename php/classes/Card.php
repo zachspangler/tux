@@ -771,6 +771,35 @@ class Card implements \JsonSerializable {
 	}
 
 	/**
+	 * gets all Cards
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @return \SplFixedArray SplFixedArray of Cards found or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 **/
+	public static function getAllCards(\PDO $pdo) : \SPLFixedArray {
+		// create query template
+		$query = "SELECT cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, carcPant, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight FROM card";
+		$statement = $pdo->prepare($query);
+		$statement->execute();
+		// build an array of cards
+		$cards = new \SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$card = new Card($row["cardId"], $row["cardProfileId"], $row["cardWeddingId"], $row["cardChest"], $row["cardCoat"],  $row["cardComplete"], $row["cardHeight"], $row["cardNeck"], $row["cardOutseam"], $row["cardPant"], $row["cardShirt"], $row["cardShoeSize"], $row["cardSleeve"], $row["cardUnderarm"], $row["cardWeight"]);
+				$cards[$cards->key()] = $card;
+				$cards->next();
+			} catch(\Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new \PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+		return ($cards);
+	}
+
+	/**
 	 * formats the state variables for JSON serialization
 	 *
 	 * @return array resulting state variables to serialize
