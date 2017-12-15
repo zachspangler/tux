@@ -14,7 +14,7 @@ require_once(dirname(__DIR__, 2) . "/lib/uuid.php");
  * @see Card
  * @author Zach Spangler<zspangler@gmail.com> and Dylan McDonald <dmcdonald21@cnm.edu>
  **/
-class ProfileTest extends TuxTest {
+class CardTest extends TuxTest {
 	/**
 	 * Card Size - Chest
 	 * @var int $VALID_CARD_CHEST
