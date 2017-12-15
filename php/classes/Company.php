@@ -1,6 +1,6 @@
 <?php
 
-namespace Edu\Cnm\Tux;
+namespace Zachspangler\Tux;
 require_once(dirname(__DIR__, 2) . "/vendor/autoload.php");
 
 

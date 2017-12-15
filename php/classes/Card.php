@@ -1,6 +1,6 @@
 <?php
 
-namespace Edu\Cnm\Tux;
+namespace Zachspangler\Tux;
 require_once(dirname(__DIR__, 2) . "/vendor/autoload.php");
 
 
@@ -611,7 +611,7 @@ class Card implements \JsonSerializable {
 	 **/
 	public function insert(\PDO $pdo): void {
 		// create query template
-		$query = "INSERT INTO card(cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, carcPant, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight) VALUES (:cardId, :cardProfileId, :cardWeddingId, :cardChest, :cardCoat, :cardComplete, :cardHeight, :cardNeck, :cardOutseam, :cardPant, :cardShirt, :cardShoeSize, :cardSleeve, :cardUnderarm, :cardWeight)";
+		$query = "INSERT INTO card(cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, cardPant, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight) VALUES (:cardId, :cardProfileId, :cardWeddingId, :cardChest, :cardCoat, :cardComplete, :cardHeight, :cardNeck, :cardOutseam, :cardPant, :cardShirt, :cardShoeSize, :cardSleeve, :cardUnderarm, :cardWeight)";
 		$statement = $pdo->prepare($query);
 		$parameters = ["cardId" => $this->cardId->getBytes(), "cardProfileId" => $this->cardProfileId->getBytes(), "cardWeddingId" => $this->cardWeddingId->getBytes(), "cardChest" => $this->cardChest, "cardCoat" => $this->cardCoat, "cardComplete" => $this->cardComplete, "cardHeight" => $this->cardHeight, "cardNeck" => $this->cardNeck, "cardOutseam" => $this->cardOutseam, "cardPant" => $this->cardPant, "cardShirt" => $this->cardShirt, "cardShoeSize" => $this->cardShoeSize, "cardSleeve" => $this->cardSleeve, "cardUnderarm" => $this->cardUnderarm, "cardWeight" => $this->cardWeight];
 		$statement->execute($parameters);
@@ -667,7 +667,7 @@ class Card implements \JsonSerializable {
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
 		}
 		// create query template
-		$query = "SELECT cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, carcPant, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight FROM card WHERE cardId = :cardId";
+		$query = "SELECT cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, cardPant, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight FROM card WHERE cardId = :cardId";
 		$statement = $pdo->prepare($query);
 
 		// bind the card id to the place holder in the template
@@ -707,7 +707,7 @@ class Card implements \JsonSerializable {
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
 		}
 		// create query template
-		$query = "SELECT cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, carcPant, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight FROM card WHERE cardId = :cardId";
+		$query = "SELECT cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, cardPant, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight FROM card WHERE cardId = :cardId";
 		$statement = $pdo->prepare($query);
 
 		// bind the profile id to the place holder in the template
@@ -747,7 +747,7 @@ class Card implements \JsonSerializable {
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
 		}
 		// create query template
-		$query = "SELECT cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, carcPant, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight FROM card WHERE cardId = :cardId";
+		$query = "SELECT cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, cardPant, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight FROM card WHERE cardId = :cardId";
 		$statement = $pdo->prepare($query);
 
 		// bind the profile id to the place holder in the template
@@ -780,7 +780,7 @@ class Card implements \JsonSerializable {
 	 **/
 	public static function getAllCards(\PDO $pdo) : \SPLFixedArray {
 		// create query template
-		$query = "SELECT cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, carcPant, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight FROM card";
+		$query = "SELECT cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, cardPant, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight FROM card";
 		$statement = $pdo->prepare($query);
 		$statement->execute();
 		// build an array of cards

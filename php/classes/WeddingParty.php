@@ -1,7 +1,8 @@
 <?php
 
-namespace Edu\Cnm\Tux;
+namespace Zachspangler\Tux;
 require_once(dirname(__DIR__, 2) . "/vendor/autoload.php");
+
 use Ramsey\Uuid\Uuid;
 /**
  * Cross Section of a Twitter Profile

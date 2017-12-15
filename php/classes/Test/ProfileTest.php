@@ -1,8 +1,10 @@
 <?php
-namespace Edu\Cnm\Tux\Test;
-use Edu\Cnm\Tux\Profile;
+namespace Zachspangler\Tux\Test;
+use Zachspangler\Tux\Profile;
+
 // grab the class under scrutiny
 require_once(dirname(__DIR__) . "/autoload.php");
+
 // grab the uuid generator
 require_once(dirname(__DIR__, 2) . "/lib/uuid.php");
 /**
@@ -75,7 +77,7 @@ class ProfileTest extends TuxTest {
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("profile"));
 		$this->assertEquals($pdoProfile->getProfileId(), $profileId);
 		$this->assertEquals($pdoProfile->getProfileActivationToken(), $this->VALID_PROFILE_ACTIVATION_TOKEN);
-		$this->assertEquals($pdoProfile->getProfileEmail(),
+		$this->assertEquals($pdoProfile->getProfileEmail());
 		$this->assertEquals($pdoProfile->getProfileHash(), $this->VALID_PROFILE_HASH);
 		$this->assertEquals($pdoProfile->getProfileName(), $this->VALID_PROFILE_NAME);
 		$this->assertEquals($pdoProfile->getProfilePhone(), $this->VALID_PROFILE_PHONE);
@@ -102,8 +104,8 @@ class ProfileTest extends TuxTest {
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("profile"));
 		$this->assertEquals($pdoProfile->getProfileId(), $profileId);
 		$this->assertEquals($pdoProfile->getProfileActivationToken(), $this->VALID_PROFILE_ACTIVATION_TOKEN);
-		$this->assertEquals($pdoProfile->getProfileEmail(),
-			$this->assertEquals($pdoProfile->getProfileHash(), $this->VALID_PROFILE_HASH);
+		$this->assertEquals($pdoProfile->getProfileEmail());
+		$this->assertEquals($pdoProfile->getProfileHash(), $this->VALID_PROFILE_HASH);
 		$this->assertEquals($pdoProfile->getProfileName(), $this->VALID_PROFILE_NAME);
 		$this->assertEquals($pdoProfile->getProfilePhone(), $this->VALID_PROFILE_PHONE);
 		$this->assertEquals($pdoProfile->getProfileSalt(), $this->VALID_PROFILE_SALT);
@@ -128,6 +130,17 @@ class ProfileTest extends TuxTest {
 		$pdoProfile = Profile::getProfileByProfileId($this->getPDO(), $profile->getProfileId());
 		$this->assertNull($pdoProfile);
 		$this->assertEquals($numRows, $this->getConnection()->getRowCount("profile"));
+		// grab the data from mySQL and enforce the fields match our expectations
+		$pdoProfile = Profile::getProfileByProfileId($this->getPDO(), $profile->getProfileId());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("profile"));
+		$this->assertEquals($pdoProfile->getProfileId(), $profileId);
+		$this->assertEquals($pdoProfile->getProfileActivationToken(), $this->VALID_PROFILE_ACTIVATION_TOKEN);
+		$this->assertEquals($pdoProfile->getProfileEmail());
+		$this->assertEquals($pdoProfile->getProfileHash(), $this->VALID_PROFILE_HASH);
+		$this->assertEquals($pdoProfile->getProfileName(), $this->VALID_PROFILE_NAME);
+		$this->assertEquals($pdoProfile->getProfilePhone(), $this->VALID_PROFILE_PHONE);
+		$this->assertEquals($pdoProfile->getProfileSalt(), $this->VALID_PROFILE_SALT);
+
 	}
 
 	/**
@@ -144,8 +157,8 @@ class ProfileTest extends TuxTest {
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("profile"));
 		$this->assertEquals($pdoProfile->getProfileId(), $profileId);
 		$this->assertEquals($pdoProfile->getProfileActivationToken(), $this->VALID_PROFILE_ACTIVATION_TOKEN);
-		$this->assertEquals($pdoProfile->getProfileEmail(),
-			$this->assertEquals($pdoProfile->getProfileHash(), $this->VALID_PROFILE_HASH);
+		$this->assertEquals($pdoProfile->getProfileEmail());
+		$this->assertEquals($pdoProfile->getProfileHash(), $this->VALID_PROFILE_HASH);
 		$this->assertEquals($pdoProfile->getProfileName(), $this->VALID_PROFILE_NAME);
 		$this->assertEquals($pdoProfile->getProfilePhone(), $this->VALID_PROFILE_PHONE);
 		$this->assertEquals($pdoProfile->getProfileSalt(), $this->VALID_PROFILE_SALT);
@@ -161,15 +174,6 @@ class ProfileTest extends TuxTest {
 		$this->assertNull($profile);
 	}
 
-	/**
-	 * test grabbing a Profile that does not exist
-	 **/
-	public function testGetInvalidProfileByProfileId(): void {
-		// grab a profile id that exceeds the maximum allowable profile id
-		$fakeProfileId = generateUuidV4();
-		$profile = Profile::getProfileByProfileId($this->getPDO(), $fakeProfileId);
-		$this->assertNull($profile);
-	}
 
 	/**
 	 * test grabbing a profile by its activation token
@@ -180,7 +184,27 @@ class ProfileTest extends TuxTest {
 		$profileId = generateUuidV4();
 		$profile = new Profile($profileId, $this->VALID_PROFILE_ACTIVATION_TOKEN, $this->VALID_PROFILE_EMAIL1, $this->VALID_PROFILE_HASH, $this->VALID_PROFILE_NAME, $this->VALID_PROFILE_PHONE, $this->VALID_PROFILE_SALT);
 		$profile->insert($this->getPDO());
+		// grab the data from mySQL and enforce the fields match our expectations
+		$pdoProfile = Profile::getProfileByProfileActivationToken($this->getPDO(), $profile->getProfileActivationToken());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("profile"));
+		$this->assertEquals($pdoProfile->getProfileId(), $profileId);
+		$this->assertEquals($pdoProfile->getProfileActivationToken(), $this->VALID_PROFILE_ACTIVATION_TOKEN);
+		$this->assertEquals($pdoProfile->getProfileEmail());
+		$this->assertEquals($pdoProfile->getProfileHash(), $this->VALID_PROFILE_HASH);
+		$this->assertEquals($pdoProfile->getProfileName(), $this->VALID_PROFILE_NAME);
+		$this->assertEquals($pdoProfile->getProfilePhone(), $this->VALID_PROFILE_PHONE);
+		$this->assertEquals($pdoProfile->getProfileSalt(), $this->VALID_PROFILE_SALT);
 	}
+
+	/**
+	 * test grabbing a Profile by an activation token that does not exists
+	 **/
+	public function testGetInvalidProfileActivationToken(): void {
+		// grab an email that does not exist
+		$profile = Profile::getProfileByProfileActivationToken($this->getPDO(), "5ebc7867885cb8dd25af05b991dd5609");
+		$this->assertNull($profile);
+	}
+
 
 	/**
 	 * test grabbing a profile by its email
@@ -191,10 +215,29 @@ class ProfileTest extends TuxTest {
 		$profileId = generateUuidV4();
 		$profile = new Profile($profileId, $this->VALID_PROFILE_ACTIVATION_TOKEN, $this->VALID_PROFILE_EMAIL1, $this->VALID_PROFILE_HASH, $this->VALID_PROFILE_NAME, $this->VALID_PROFILE_PHONE, $this->VALID_PROFILE_SALT);
 		$profile->insert($this->getPDO());
+		// grab the data from mySQL and enforce the fields match our expectations
+		$pdoProfile = Profile::getProfileByProfileEmail($this->getPDO(), $profile->getProfileEmail());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("profile"));
+		$this->assertEquals($pdoProfile->getProfileId(), $profileId);
+		$this->assertEquals($pdoProfile->getProfileActivationToken(), $this->VALID_PROFILE_ACTIVATION_TOKEN);
+		$this->assertEquals($pdoProfile->getProfileEmail());
+		$this->assertEquals($pdoProfile->getProfileHash(), $this->VALID_PROFILE_HASH);
+		$this->assertEquals($pdoProfile->getProfileName(), $this->VALID_PROFILE_NAME);
+		$this->assertEquals($pdoProfile->getProfilePhone(), $this->VALID_PROFILE_PHONE);
+		$this->assertEquals($pdoProfile->getProfileSalt(), $this->VALID_PROFILE_SALT);
 	}
 
 	/**
-	 * test grabbing a profile by its activation token
+	 * test grabbing a Profile by profile email that does not exist
+	 **/
+	public function testGetInvalidProfileByProfileEmail(): void {
+		// grab an email that does not exist
+		$profile = Profile::getProfileByProfileEmail($this->getPDO(), "emailfailing@failing.failing");
+		$this->assertNull($profile);
+	}
+
+	/**
+	 * test grabbing a profile by its profile name
 	 */
 	public function testGetValidProfileByProfileName(): void {
 // count the number of rows and save it for later
@@ -202,6 +245,25 @@ class ProfileTest extends TuxTest {
 		$profileId = generateUuidV4();
 		$profile = new Profile($profileId, $this->VALID_PROFILE_ACTIVATION_TOKEN, $this->VALID_PROFILE_EMAIL1, $this->VALID_PROFILE_HASH, $this->VALID_PROFILE_NAME, $this->VALID_PROFILE_PHONE, $this->VALID_PROFILE_SALT);
 		$profile->insert($this->getPDO());
+		// grab the data from mySQL and enforce the fields match our expectations
+		$pdoProfile = Profile::getProfileByProfileName($this->getPDO(), $profile->getProfileName());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("profile"));
+		$this->assertEquals($pdoProfile->getProfileId(), $profileId);
+		$this->assertEquals($pdoProfile->getProfileActivationToken(), $this->VALID_PROFILE_ACTIVATION_TOKEN);
+		$this->assertEquals($pdoProfile->getProfileEmail());
+		$this->assertEquals($pdoProfile->getProfileHash(), $this->VALID_PROFILE_HASH);
+		$this->assertEquals($pdoProfile->getProfileName(), $this->VALID_PROFILE_NAME);
+		$this->assertEquals($pdoProfile->getProfilePhone(), $this->VALID_PROFILE_PHONE);
+		$this->assertEquals($pdoProfile->getProfileSalt(), $this->VALID_PROFILE_SALT);
+	}
+
+	/**
+	 * test grabbing a Profile by profile email that does not exist
+	 **/
+	public function testGetInvalidProfileByProfileName(): void {
+		// grab an email that does not exist
+		$profile = Profile::getProfileByProfileName($this->getPDO(), "Frank");
+		$this->assertNull($profile);
 	}
 
 	/**
@@ -213,6 +275,25 @@ class ProfileTest extends TuxTest {
 		$profileId = generateUuidV4();
 		$profile = new Profile($profileId, $this->VALID_PROFILE_ACTIVATION_TOKEN, $this->VALID_PROFILE_EMAIL1, $this->VALID_PROFILE_HASH, $this->VALID_PROFILE_NAME, $this->VALID_PROFILE_PHONE, $this->VALID_PROFILE_SALT);
 		$profile->insert($this->getPDO());
+		// grab the data from mySQL and enforce the fields match our expectations
+		$pdoProfile = Profile::getProfileByProfilePhone($this->getPDO(), $profile->getProfilePhone());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("profile"));
+		$this->assertEquals($pdoProfile->getProfileId(), $profileId);
+		$this->assertEquals($pdoProfile->getProfileActivationToken(), $this->VALID_PROFILE_ACTIVATION_TOKEN);
+		$this->assertEquals($pdoProfile->getProfileEmail());
+		$this->assertEquals($pdoProfile->getProfileHash(), $this->VALID_PROFILE_HASH);
+		$this->assertEquals($pdoProfile->getProfileName(), $this->VALID_PROFILE_NAME);
+		$this->assertEquals($pdoProfile->getProfilePhone(), $this->VALID_PROFILE_PHONE);
+		$this->assertEquals($pdoProfile->getProfileSalt(), $this->VALID_PROFILE_SALT);
+	}
+
+	/**
+	 * test grabbing a Profile by profile email that does not exist
+	 **/
+	public function testGetInvalidProfileByProfilePhone(): void {
+		// grab an email that does not exist
+		$profile = Profile::getProfileByProfilePhone($this->getPDO(), "12344566874");
+		$this->assertNull($profile);
 	}
 
 
@@ -225,5 +306,22 @@ class ProfileTest extends TuxTest {
 		$profileId = generateUuidV4();
 		$profile = new Profile($profileId, $this->VALID_PROFILE_ACTIVATION_TOKEN, $this->VALID_PROFILE_EMAIL1, $this->VALID_PROFILE_HASH, $this->VALID_PROFILE_NAME, $this->VALID_PROFILE_PHONE, $this->VALID_PROFILE_SALT);
 		$profile->insert($this->getPDO());
+
+		// grab the data from mySQL and enforce the fields match our expectations
+		$results = Profile::getAllProfiles($this->getPDO());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("profile"));
+		$this->assertCount(1, $results);
+		$this->assertContainsOnlyInstancesOf("Zachspangler\\Tux\\Profile", $results);
+
+		// grab the result from the array and validate it
+		$pdoProfile = $results[0];
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("profile"));
+		$this->assertEquals($pdoProfile->getProfileId(), $profileId);
+		$this->assertEquals($pdoProfile->getProfileActivationToken(), $this->VALID_PROFILE_ACTIVATION_TOKEN);
+		$this->assertEquals($pdoProfile->getProfileEmail());
+		$this->assertEquals($pdoProfile->getProfileHash(), $this->VALID_PROFILE_HASH);
+		$this->assertEquals($pdoProfile->getProfileName(), $this->VALID_PROFILE_NAME);
+		$this->assertEquals($pdoProfile->getProfilePhone(), $this->VALID_PROFILE_PHONE);
+		$this->assertEquals($pdoProfile->getProfileSalt(), $this->VALID_PROFILE_SALT);
 	}
 }

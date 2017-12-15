@@ -1,5 +1,6 @@
 <?php
-namespace Edu\Cnm\Tux\Test;
+namespace Zachspangler\Tux\Test;
+
 use PHPUnit\Framework\TestCase;
 use PHPUnit\DbUnit\TestCaseTrait;
 use PHPUnit\DbUnit\DataSet\QueryDataSet;

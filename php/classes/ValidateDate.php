@@ -1,5 +1,5 @@
 <?php
-namespace Edu\Cnm\Tux;
+namespace Zachspangler\Tux;
 /**
  * Trait to Validate a mySQL Date
  *

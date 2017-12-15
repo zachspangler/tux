@@ -1,5 +1,5 @@
 <?php
-namespace Edu\Cnm\Tux;
+namespace Zachspangler\Tux;
 require_once("autoload.php");
 /**
  * JsonObjectStorage Class
