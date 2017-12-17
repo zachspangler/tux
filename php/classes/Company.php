@@ -65,6 +65,11 @@ class Company implements \JsonSerializable {
 	 * @var string $companyState
 	 **/
 	private $companyState;
+	/**
+	 * state of the company
+	 * @var string $companyNotifications
+	 **/
+	private $companyNotifications;
 
 	/**
 	 * constructor for this Company
@@ -79,13 +84,14 @@ class Company implements \JsonSerializable {
 	 * @param string $newCompanyPostalCode
 	 * @param string $newCompanySalt
 	 * @param string $newCompanyState
+	 * @param string $newCompanyNotifications
 	 * @throws \InvalidArgumentException if data types are not valid
 	 * @throws \RangeException if data values are out of bounds (e.g., strings too long, negative integers)
 	 * @throws \TypeError if a data type violates a data hint
 	 * @throws \Exception if some other exception occurs
 	 * @Documentation https://php.net/manual/en/language.oop5.decon.php
 	 **/
-	public function __construct($newCompanyId, string $newCompanyAddress, string $newCompanyCity, string $newCompanyEmail, string $newCompanyHash, string $newCompanyName, string $newCompanyPhone, string $newCompanyPostalCode, string $newCompanySalt, string $newCompanyState) {
+	public function __construct($newCompanyId, string $newCompanyAddress, string $newCompanyCity, string $newCompanyEmail, string $newCompanyHash, string $newCompanyName, string $newCompanyPhone, string $newCompanyPostalCode, string $newCompanySalt, string $newCompanyState, string $newCompanyNotifications) {
 		try {
 			$this->setCompanyId($newCompanyId);
 			$this->setCompanyAddress($newCompanyAddress);
@@ -97,6 +103,7 @@ class Company implements \JsonSerializable {
 			$this->setCompanyPostalCode($newCompanyPostalCode);
 			$this->setCompanySalt($newCompanySalt);
 			$this->setCompanyState($newCompanyState);
+			$this->setCompanyNotifications($newCompanyNotifications);
 		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
 			//determine what exception type was thrown
 			$exceptionType = get_class($exception);
@@ -426,6 +433,39 @@ class Company implements \JsonSerializable {
 	}
 
 	/**
+	 *accessor method for company notifications
+	 *
+	 * @return string company notifications
+	 */
+	public function getCompanyNotifications(): string {
+		return $this->companyNotifications;
+	}
+
+	/**
+	 * mutator method for company notifications
+	 *
+	 * @param string $newCompanyNotifications
+	 * @throws \InvalidArgumentException if the salt is not secure
+	 * @throws \RangeException if the salt is not 64 characters
+	 * @throws \TypeError if the profile salt is not a string
+	 */
+	public function setCompanyNotifications(string $newCompanyNotifications): void {
+		//enforce that the salt is properly formatted
+		$newCompanyNotifications = trim($newCompanyNotifications);
+		$newCompanyNotifications = strtolower($newCompanyNotifications);
+		//enforce that the salt is a string representation of a hexadecimal
+		if(!ctype_xdigit($newCompanyNotifications)) {
+			throw(new \InvalidArgumentException("profile password hash is empty or insecure"));
+		}
+		//enforce that the salt is exactly 64 characters.
+		if(strlen($newCompanyNotifications) !== 64) {
+			throw(new \RangeException("profile salt must be 128 characters"));
+		}
+		//store the hash
+		$this->companyNotifications = $newCompanyNotifications;
+	}
+
+	/**
 	 * inserts this Profile into mySQL
 	 *
 	 * @param \PDO $pdo PDO connection object
@@ -434,9 +474,9 @@ class Company implements \JsonSerializable {
 	 **/
 	public function insert(\PDO $pdo): void {
 		// create query template
-		$query = "INSERT INTO company(companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, CompanySalt, CompanyState) VALUES (:companyId, :companyAddress, :companyCity, :companyEmail, :companyHash, :companyName, :companyPhone, :companyPostalCode, :companySalt, :companyState)";
+		$query = "INSERT INTO company(companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, CompanySalt, companyState, companyNotifications) VALUES (:companyId, :companyAddress, :companyCity, :companyEmail, :companyHash, :companyName, :companyPhone, :companyPostalCode, :companySalt, :companyState, :companyNotifications)";
 		$statement = $pdo->prepare($query);
-		$parameters = ["companyId" => $this->companyId->getBytes(), "companyAddress" => $this->companyAddress, "companyCity" => $this->companyCity, "companyEmail" => $this->companyEmail, "companyHash" => $this->companyHash, "companyName" => $this->companyName, "companyPhone" => $this->companyPhone, "companyPostalCode" => $this->companyPostalCode, "companySalt" => $this->companyState];
+		$parameters = ["companyId" => $this->companyId->getBytes(), "companyAddress" => $this->companyAddress, "companyCity" => $this->companyCity, "companyEmail" => $this->companyEmail, "companyHash" => $this->companyHash, "companyName" => $this->companyName, "companyPhone" => $this->companyPhone, "companyPostalCode" => $this->companyPostalCode, "companySalt" => $this->companySalt, "companyState" => $this->companyState, "companyNotifications" => $this->companyNotifications];
 		$statement->execute($parameters);
 	}
 
@@ -464,10 +504,10 @@ class Company implements \JsonSerializable {
 	 **/
 	public function update(\PDO $pdo): void {
 		// create query template
-		$query = "UPDATE company SET companyId = :companyId, companyAddress = :companyAddress, companyCity = :companyCity, companyEmail = :companyEmail, companyHash = :companyHash, companyName = :companyName, companyPhone = :companyPhone, companyPostalCode = :companyPostalCode, CompanySalt = :companySalt, CompanyState = :companyState WHERE companyId = :companyId";
+		$query = "UPDATE company SET companyId = :companyId, companyAddress = :companyAddress, companyCity = :companyCity, companyEmail = :companyEmail, companyHash = :companyHash, companyName = :companyName, companyPhone = :companyPhone, companyPostalCode = :companyPostalCode, companySalt = :companySalt, companyState = :companyState,companyNotifications = :companyNotifications  WHERE companyId = :companyId";
 		$statement = $pdo->prepare($query);
 		// bind the member variables to the place holders in the template
-		$parameters = ["companyId" => $this->companyId->getBytes(), "companyAddress" => $this->companyAddress, "companyCity" => $this->companyCity, "companyEmail" => $this->companyEmail, "companyHash" => $this->companyHash, "companyName" => $this->companyName, "companyPhone" => $this->companyPhone, "companyPostalCode" => $this->companyPostalCode, "companySalt" => $this->companyState];
+		$parameters = ["companyId" => $this->companyId->getBytes(), "companyAddress" => $this->companyAddress, "companyCity" => $this->companyCity, "companyEmail" => $this->companyEmail, "companyHash" => $this->companyHash, "companyName" => $this->companyName, "companyPhone" => $this->companyPhone, "companyPostalCode" => $this->companyPostalCode, "companySalt" => $this->companySalt, "companyState" => $this->companyState, "companyNotifications" => $this->companyNotifications];
 		$statement->execute($parameters);
 	}
 
@@ -489,7 +529,7 @@ class Company implements \JsonSerializable {
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
 		}
 		// create query template
-		$query = "SELECT companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, CompanySalt, CompanyState FROM company WHERE companyId = :companyId";
+		$query = "SELECT companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, companySalt, companyState, companyNotifications FROM company WHERE companyId = :companyId";
 		$statement = $pdo->prepare($query);
 		// bind the company id to the place holder in the template
 		$parameters = ["companyId" => $companyId->getBytes()];
@@ -500,7 +540,7 @@ class Company implements \JsonSerializable {
 			$statement->setFetchMode(\PDO::FETCH_ASSOC);
 			$row = $statement->fetch();
 			if($row !== false) {
-				$company = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"]);
+				$company = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"], $row["companyNotifications"]);
 			}
 		} catch(\Exception $exception) {
 			// if the row couldn't be converted, rethrow it
@@ -527,7 +567,7 @@ class Company implements \JsonSerializable {
 		}
 
 		// create query template
-		$query = "SELECT companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, CompanySalt, CompanyState FROM company WHERE :companyCity LIKE CONCAT('%', REPLACE(:companyCity, ' ', '%'),'%')";
+		$query = "SELECT companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, companySalt, companyState, companyNotifications FROM company WHERE :companyCity LIKE CONCAT('%', REPLACE(:companyCity, ' ', '%'),'%')";
 		$statement = $pdo->prepare($query);
 
 		// bind the city to the place holder in the template
@@ -540,7 +580,7 @@ class Company implements \JsonSerializable {
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
-				$companyCity = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"]);
+				$companyCity = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"], $row["companyNotifications"]);
 				$companyCities[$companyCities->key()] = $companyCity;
 				$companyCities->next();
 			} catch(\Exception $exception) {
@@ -568,7 +608,7 @@ class Company implements \JsonSerializable {
 			throw(new \PDOException("not a valid email"));
 		}
 		// create query template
-		$query = "SELECT companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, CompanySalt, CompanyState FROM company WHERE companyEmail = :companyEmail";
+		$query = "SELECT companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, companySalt, companyState, companyNotifications FROM company WHERE companyEmail = :companyEmail";
 		$statement = $pdo->prepare($query);
 		// bind the Company email to the place holder in the template
 		$parameters = ["companyEmail" => $companyEmail];
@@ -579,7 +619,7 @@ class Company implements \JsonSerializable {
 			$statement->setFetchMode(\PDO::FETCH_ASSOC);
 			$row = $statement->fetch();
 			if($row !== false) {
-				$company = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"]);
+				$company = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"], $row["companyNotifications"]);
 			}
 		} catch(\Exception $exception) {
 			// if the row couldn't be converted, rethrow it
@@ -619,7 +659,7 @@ class Company implements \JsonSerializable {
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
-				$companyName = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"]);
+				$companyName = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"], $row["companyNotifications"]);
 				$companyNames[$companyNames->key()] = $companyName;
 				$companyNames->next();
 			} catch(\Exception $exception) {
@@ -647,7 +687,7 @@ class Company implements \JsonSerializable {
 			throw(new \PDOException("not a valid phone number"));
 		}
 		// create query template
-		$query = "SELECT companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, CompanySalt, CompanyState FROM company WHERE companyPhone = :companyPhone";
+		$query = "SELECT companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, companySalt, companyState, companyNotifications FROM company WHERE companyPhone = :companyPhone";
 		$statement = $pdo->prepare($query);
 		// bind the profile email to the place holder in the template
 		$parameters = ["companyPhone" => $companyPhone];
@@ -658,7 +698,7 @@ class Company implements \JsonSerializable {
 			$statement->setFetchMode(\PDO::FETCH_ASSOC);
 			$row = $statement->fetch();
 			if($row !== false) {
-				$$company = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"]);
+				$company = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"], $row["companyNotifications"]);
 			}
 		} catch(\Exception $exception) {
 			// if the row couldn't be converted, rethrow it
@@ -685,7 +725,7 @@ class Company implements \JsonSerializable {
 		}
 
 		// create query template
-		$query = "SELECT companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, CompanySalt, CompanyState FROM company WHERE :companyPostalCode LIKE CONCAT('%', REPLACE(:companyPostalCode, ' ', '%'),'%')";
+		$query = "SELECT companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, companySalt, companyState, companyNotifications FROM company WHERE :companyPostalCode LIKE CONCAT('%', REPLACE(:companyPostalCode, ' ', '%'),'%')";
 		$statement = $pdo->prepare($query);
 
 		// bind the postal code to the place holder in the template
@@ -698,7 +738,7 @@ class Company implements \JsonSerializable {
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
-				$companyPostalCode = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"]);
+				$companyPostalCode = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"], $row["companyNotifications"]);
 				$companyPostalCodes[$companyPostalCodes->key()] = $companyPostalCode;
 				$companyPostalCodes->next();
 			} catch(\Exception $exception) {
@@ -727,7 +767,7 @@ class Company implements \JsonSerializable {
 		}
 
 		// create query template
-		$query = "SELECT companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, CompanySalt, CompanyState FROM company WHERE :companyState LIKE CONCAT('%', REPLACE(:companyState, ' ', '%'),'%')";
+		$query = "SELECT companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, companySalt, companyState, companyNotifications FROM company WHERE :companyState LIKE CONCAT('%', REPLACE(:companyState, ' ', '%'),'%')";
 		$statement = $pdo->prepare($query);
 
 		// bind the postal code to the place holder in the template
@@ -740,7 +780,7 @@ class Company implements \JsonSerializable {
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
-				$companyState = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"]);
+				$companyState = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"], $row["companyNotifications"]);
 				$companyStates[$companyStates->key()] = $companyState;
 				$companyStates->next();
 			} catch(\Exception $exception) {
@@ -762,7 +802,7 @@ class Company implements \JsonSerializable {
 	public static function getAllCompanies(\PDO $pdo) : \SPLFixedArray {
 
 		// create query template
-		$query = "SELECT companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, CompanySalt, CompanyState FROM company";
+		$query = "SELECT companyId, companyAddress, companyCity, companyEmail, companyHash, companyName, companyPhone, companyPostalCode, companySalt, companyState, companyNotifications FROM company";
 		$statement = $pdo->prepare($query);
 		$statement->execute();
 
@@ -771,7 +811,7 @@ class Company implements \JsonSerializable {
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
-				$company = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"]);
+				$company = new Company($row["companyId"], $row["companyAddress"], $row["companyCity"], $row["companyEmail"], $row["companyHash"],  $row["companyName"], $row["companyPhone"], $row["companyPostalCode"], $row["companySalt"], $row["companyState"], $row["companyNotifications"]);
 				$companies[$companies->key()] = $company;
 				$companies->next();
 			} catch(\Exception $exception) {
