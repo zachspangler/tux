@@ -122,7 +122,6 @@ class ProfileTest extends TuxTest {
 		$profile = new Profile($profileId, $this->VALID_PROFILE_ACTIVATION_TOKEN, $this->VALID_PROFILE_EMAIL1, $this->VALID_PROFILE_HASH, $this->VALID_PROFILE_NAME, $this->VALID_PROFILE_PHONE, $this->VALID_PROFILE_SALT);
 		$profile->insert($this->getPDO());
 
-
 		// delete the Profile from mySQL
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("profile"));
 		$profile->delete($this->getPDO());
@@ -210,7 +209,7 @@ class ProfileTest extends TuxTest {
 	 * test grabbing a profile by its email
 	 */
 	public function testGetValidProfileByProfileEmail(): void {
-// count the number of rows and save it for later
+	// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("profile");
 		$profileId = generateUuidV4();
 		$profile = new Profile($profileId, $this->VALID_PROFILE_ACTIVATION_TOKEN, $this->VALID_PROFILE_EMAIL1, $this->VALID_PROFILE_HASH, $this->VALID_PROFILE_NAME, $this->VALID_PROFILE_PHONE, $this->VALID_PROFILE_SALT);
@@ -307,7 +306,7 @@ class ProfileTest extends TuxTest {
 	 * test grabbing all profiles
 	 */
 	public function testGetValidProfileByAllProfiles(): void {
-// count the number of rows and save it for later
+	// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("profile");
 		$profileId = generateUuidV4();
 		$profile = new Profile($profileId, $this->VALID_PROFILE_ACTIVATION_TOKEN, $this->VALID_PROFILE_EMAIL1, $this->VALID_PROFILE_HASH, $this->VALID_PROFILE_NAME, $this->VALID_PROFILE_PHONE, $this->VALID_PROFILE_SALT);

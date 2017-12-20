@@ -8,12 +8,12 @@ require_once(dirname(__DIR__) . "/autoload.php");
 // grab the uuid generator
 require_once(dirname(__DIR__, 2) . "/lib/uuid.php");
 /**
- * Full PHPUnit test for the Profile class
+ * Full PHPUnit test for the Company class
  *
- * This is a complete PHPUnit test of the Profile class. It is complete because *ALL* mySQL/PDO enabled methods
+ * This is a complete PHPUnit test of the Company class. It is complete because *ALL* mySQL/PDO enabled methods
  * are tested for both invalid and valid inputs.
  *
- * @see Profile
+ * @see Company
  * @author Zach Spangler<zspangler@gmail.com> and Dylan McDonald <dmcdonald21@cnm.edu>
  **/
 class CompanyTest extends TuxTest {
@@ -58,7 +58,7 @@ class CompanyTest extends TuxTest {
 	 **/
 	protected $VALID_COMPANY_POSTAL_CODE = 87111;
 	/**
-	 * Company Salt is used for the profile password
+	 * Company Salt is used for the Company password
 	 * @var $VALID_COMPANY_SALT
 	 **/
 	protected $VALID_COMPANY_SALT;
@@ -86,7 +86,7 @@ class CompanyTest extends TuxTest {
 	}
 
 	/**
-	 * test inserting a valid Profile and verify that the actual mySQL data matches
+	 * test inserting a valid Company and verify that the actual mySQL data matches
 	 **/
 	public function testInsertValidCompany(): void {
 		// count the number of rows and save it for later
@@ -113,22 +113,22 @@ class CompanyTest extends TuxTest {
 
 
 	/**
-	 * test inserting a Profile, editing it, and then updating it
+	 * test inserting a Company, editing it, and then updating it
 	 **/
 	public function testUpdateValidCompany() {
 		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("company");
-		// create a new Profile and insert to into mySQL
+		// create a new Company and insert to into mySQL
 		$companyId = generateUuidV4();
 		$company = new Company($companyId, $this->VALID_COMPANY_ADDRESS, $this->VALID_COMPANY_CITY, $this->VALID_COMPANY_EMAIL, $this->VALID_COMPANY_HASH, $this->VALID_COMPANY_NAME, $this->VALID_COMPANY_PHONE, $this->VALID_COMPANY_POSTAL_CODE, $this->VALID_COMPANY_SALT, $this->VALID_COMPANY_STATE, $this->VALID_COMPANY_NOTIFICATIONS);
 		$company->insert($this->getPDO());
 
-		// edit the Profile and update it in mySQL
+		// edit the Company and update it in mySQL
 		$company->setCompanyEmail($this->VALID_COMPANY_EMAIL2);
 		$company->update($this->getPDO());
 
 		// grab the data from mySQL and enforce the fields match our expectations
-		$$pdoCompany = Company::getCompanyByCompanyId($this->getPDO(), $company->getCompanyId());
+		$pdoCompany = Company::getCompanyByCompanyId($this->getPDO(), $company->getCompanyId());
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("company"));
 		$this->assertEquals($pdoCompany->getCompanyId(), $companyId);
 		$this->assertEquals($pdoCompany->getCompanyAddress(), $this->VALID_COMPANY_ADDRESS);
@@ -175,35 +175,281 @@ class CompanyTest extends TuxTest {
 	/**
 	 * test grabbing a Company by city
 	 **/
-	public function testDeleteValidCompany(): void {}
+	public function testGetValidCompanyByCompanyCity(): void {
+		// count the number of rows and save it for later
+		$numRows = $this->getConnection()->getRowCount("company");
+
+		// create a new Company and insert to into mySQL
+		$companyId = generateUuidV4();
+		$company = new Company($companyId, $this->VALID_COMPANY_ADDRESS, $this->VALID_COMPANY_CITY, $this->VALID_COMPANY_EMAIL, $this->VALID_COMPANY_HASH, $this->VALID_COMPANY_NAME, $this->VALID_COMPANY_PHONE, $this->VALID_COMPANY_POSTAL_CODE, $this->VALID_COMPANY_SALT, $this->VALID_COMPANY_STATE, $this->VALID_COMPANY_NOTIFICATIONS);
+		$company->insert($this->getPDO());
+
+		// grab the data from mySQL and enforce the fields match our expectations
+		$results = Company::getCompanyByCompanyCity($this->getPDO(), $company->getCompanyCity());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("company"));
+		$this->assertCount(1, $results);
+		$this->assertContainsOnlyInstancesOf("Zachspangler\\Tux\\Company", $results);
+
+		// grab the result from the array and validate it
+		$pdoCompany = $results[0];
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("company"));
+		$this->assertEquals($pdoCompany->getCompanyId(), $companyId);
+		$this->assertEquals($pdoCompany->getCompanyAddress(), $this->VALID_COMPANY_ADDRESS);
+		$this->assertEquals($pdoCompany->getCompanyCity(), $this->VALID_COMPANY_CITY);
+		$this->assertEquals($pdoCompany->getCompanyEmail(), $this->VALID_COMPANY_EMAIL2);
+		$this->assertEquals($pdoCompany->getCompanyHash(), $this->VALID_COMPANY_HASH);
+		$this->assertEquals($pdoCompany->getCompanyName(), $this->VALID_COMPANY_NAME);
+		$this->assertEquals($pdoCompany->getCompanyPhone(), $this->VALID_COMPANY_PHONE);
+		$this->assertEquals($pdoCompany->getCompanyPostalCode(), $this->VALID_COMPANY_POSTAL_CODE);
+		$this->assertEquals($pdoCompany->getCompanySalt(), $this->VALID_COMPANY_SALT);
+		$this->assertEquals($pdoCompany->getCompanyState(), $this->VALID_COMPANY_STATE);
+		$this->assertEquals($pdoCompany->getCompanyNotifications(), $this->VALID_COMPANY_NOTIFICATIONS);
+	}
+
+	/**
+	 * test grabbing a company by a city that does not exist
+	 **/
+	public function testGetInvalidCompanyByCompanyCity() : void {
+		// grab a company by a city that does not exist
+		$company = Company::getCompanyByCompanyCity($this->getPDO(), "Dallas");
+		$this->assertCount(0, $company);
+	}
 
 	/**
 	 * test grabbing a Company by email
 	 **/
-	public function testDeleteValidCompany(): void {}
+
+	public function testGetValidCompanyByCompanyEmail(): void {
+		// count the number of rows and save it for later
+		$numRows = $this->getConnection()->getRowCount("company");
+
+		// create a new Company and insert to into mySQL
+		$companyId = generateUuidV4();
+		$company = new Company($companyId, $this->VALID_COMPANY_ADDRESS, $this->VALID_COMPANY_CITY, $this->VALID_COMPANY_EMAIL, $this->VALID_COMPANY_HASH, $this->VALID_COMPANY_NAME, $this->VALID_COMPANY_PHONE, $this->VALID_COMPANY_POSTAL_CODE, $this->VALID_COMPANY_SALT, $this->VALID_COMPANY_STATE, $this->VALID_COMPANY_NOTIFICATIONS);
+		$company->insert($this->getPDO());
+
+	// grab the data from mySQL and enforce the fields match our expectations
+		$pdoCompany = Company::getCompanyByCompanyEmail($this->getPDO(), $company->getCompanyEmail());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("company"));
+		$this->assertEquals($pdoCompany->getCompanyId(), $companyId);
+		$this->assertEquals($pdoCompany->getCompanyAddress(), $this->VALID_COMPANY_ADDRESS);
+		$this->assertEquals($pdoCompany->getCompanyCity(), $this->VALID_COMPANY_CITY);
+		$this->assertEquals($pdoCompany->getCompanyEmail(), $this->VALID_COMPANY_EMAIL2);
+		$this->assertEquals($pdoCompany->getCompanyHash(), $this->VALID_COMPANY_HASH);
+		$this->assertEquals($pdoCompany->getCompanyName(), $this->VALID_COMPANY_NAME);
+		$this->assertEquals($pdoCompany->getCompanyPhone(), $this->VALID_COMPANY_PHONE);
+		$this->assertEquals($pdoCompany->getCompanyPostalCode(), $this->VALID_COMPANY_POSTAL_CODE);
+		$this->assertEquals($pdoCompany->getCompanySalt(), $this->VALID_COMPANY_SALT);
+		$this->assertEquals($pdoCompany->getCompanyState(), $this->VALID_COMPANY_STATE);
+		$this->assertEquals($pdoCompany->getCompanyNotifications(), $this->VALID_COMPANY_NOTIFICATIONS);
+	}
 
 	/**
-	 * test grabbing a Company by name
+	 * test grabbing a company by an email that does not exist
 	 **/
-	public function testDeleteValidCompany(): void {}
+	public function testGetInvalidCompanyByCompanyEmail() : void {
+		// grab a company by a city that does not exist
+		$company = Company::getCompanyByCompanyEmail($this->getPDO(), "hi@me.com");
+		$this->assertCount(0, $company);
+	}
+
+	/**
+	 * test grabbing a company a company name
+	 **/
+	public function testGetValidCompanyByCompanyName(): void {
+		// count the number of rows and save it for later
+		$numRows = $this->getConnection()->getRowCount("company");
+
+		// create a new Company and insert to into mySQL
+		$companyId = generateUuidV4();
+		$company = new Company($companyId, $this->VALID_COMPANY_ADDRESS, $this->VALID_COMPANY_CITY, $this->VALID_COMPANY_EMAIL, $this->VALID_COMPANY_HASH, $this->VALID_COMPANY_NAME, $this->VALID_COMPANY_PHONE, $this->VALID_COMPANY_POSTAL_CODE, $this->VALID_COMPANY_SALT, $this->VALID_COMPANY_STATE, $this->VALID_COMPANY_NOTIFICATIONS);
+		$company->insert($this->getPDO());
+
+		// grab the data from mySQL and enforce the fields match our expectations
+		$results = Company::getCompanyByCompanyName($this->getPDO(), $company->getCompanyName());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("company"));
+		$this->assertCount(1, $results);
+		$this->assertContainsOnlyInstancesOf("Zachspangler\\Tux\\Company", $results);
+
+		// grab the result from the array and validate it
+		$pdoCompany = $results[0];
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("company"));
+		$this->assertEquals($pdoCompany->getCompanyId(), $companyId);
+		$this->assertEquals($pdoCompany->getCompanyAddress(), $this->VALID_COMPANY_ADDRESS);
+		$this->assertEquals($pdoCompany->getCompanyCity(), $this->VALID_COMPANY_CITY);
+		$this->assertEquals($pdoCompany->getCompanyEmail(), $this->VALID_COMPANY_EMAIL2);
+		$this->assertEquals($pdoCompany->getCompanyHash(), $this->VALID_COMPANY_HASH);
+		$this->assertEquals($pdoCompany->getCompanyName(), $this->VALID_COMPANY_NAME);
+		$this->assertEquals($pdoCompany->getCompanyPhone(), $this->VALID_COMPANY_PHONE);
+		$this->assertEquals($pdoCompany->getCompanyPostalCode(), $this->VALID_COMPANY_POSTAL_CODE);
+		$this->assertEquals($pdoCompany->getCompanySalt(), $this->VALID_COMPANY_SALT);
+		$this->assertEquals($pdoCompany->getCompanyState(), $this->VALID_COMPANY_STATE);
+		$this->assertEquals($pdoCompany->getCompanyNotifications(), $this->VALID_COMPANY_NOTIFICATIONS);
+	}
+
+	/**
+	 * test grabbing a company by a name that does not exist
+	 **/
+	public function testGetInvalidCompanyByCompanyName() : void {
+		// grab a company by a city that does not exist
+		$company = Company::getCompanyByCompanyPostalCode($this->getPDO(), "Farm");
+		$this->assertCount(0, $company);
+	}
 
 	/**
 	 * test grabbing a Company by phone
 	 **/
-	public function testDeleteValidCompany(): void {}
+	public function testGetValidCompanyByCompanyPhone(): void {
+		// count the number of rows and save it for later
+		$numRows = $this->getConnection()->getRowCount("company");
+
+		// create a new Company and insert to into mySQL
+		$companyId = generateUuidV4();
+		$company = new Company($companyId, $this->VALID_COMPANY_ADDRESS, $this->VALID_COMPANY_CITY, $this->VALID_COMPANY_EMAIL, $this->VALID_COMPANY_HASH, $this->VALID_COMPANY_NAME, $this->VALID_COMPANY_PHONE, $this->VALID_COMPANY_POSTAL_CODE, $this->VALID_COMPANY_SALT, $this->VALID_COMPANY_STATE, $this->VALID_COMPANY_NOTIFICATIONS);
+		$company->insert($this->getPDO());
+
+		// grab the data from mySQL and enforce the fields match our expectations
+		$pdoCompany = Company::getCompanyByCompanyPhone($this->getPDO(), $company->getCompanyPhone());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("company"));
+		$this->assertEquals($pdoCompany->getCompanyId(), $companyId);
+		$this->assertEquals($pdoCompany->getCompanyAddress(), $this->VALID_COMPANY_ADDRESS);
+		$this->assertEquals($pdoCompany->getCompanyCity(), $this->VALID_COMPANY_CITY);
+		$this->assertEquals($pdoCompany->getCompanyEmail(), $this->VALID_COMPANY_EMAIL2);
+		$this->assertEquals($pdoCompany->getCompanyHash(), $this->VALID_COMPANY_HASH);
+		$this->assertEquals($pdoCompany->getCompanyName(), $this->VALID_COMPANY_NAME);
+		$this->assertEquals($pdoCompany->getCompanyPhone(), $this->VALID_COMPANY_PHONE);
+		$this->assertEquals($pdoCompany->getCompanyPostalCode(), $this->VALID_COMPANY_POSTAL_CODE);
+		$this->assertEquals($pdoCompany->getCompanySalt(), $this->VALID_COMPANY_SALT);
+		$this->assertEquals($pdoCompany->getCompanyState(), $this->VALID_COMPANY_STATE);
+		$this->assertEquals($pdoCompany->getCompanyNotifications(), $this->VALID_COMPANY_NOTIFICATIONS);
+	}
+
+	/**
+	 * test grabbing a company by an phone that does not exist
+	 **/
+	public function testGetInvalidCompanyByCompanyPhone() : void {
+		// grab a company by a city that does not exist
+		$company = Company::getCompanyByCompanyPhone($this->getPDO(), "1231231231");
+		$this->assertCount(0, $company);
+	}
 
 	/**
 	 * test grabbing a Company by postal code
 	 **/
-	public function testDeleteValidCompany(): void {}
+	public function testGetValidCompanyByCompanyPostalCode(): void {
+		// count the number of rows and save it for later
+		$numRows = $this->getConnection()->getRowCount("company");
+
+		// create a new Company and insert to into mySQL
+		$companyId = generateUuidV4();
+		$company = new Company($companyId, $this->VALID_COMPANY_ADDRESS, $this->VALID_COMPANY_CITY, $this->VALID_COMPANY_EMAIL, $this->VALID_COMPANY_HASH, $this->VALID_COMPANY_NAME, $this->VALID_COMPANY_PHONE, $this->VALID_COMPANY_POSTAL_CODE, $this->VALID_COMPANY_SALT, $this->VALID_COMPANY_STATE, $this->VALID_COMPANY_NOTIFICATIONS);
+		$company->insert($this->getPDO());
+
+		// grab the data from mySQL and enforce the fields match our expectations
+		$results = Company::getCompanyByCompanyPostalCode($this->getPDO(), $company->getCompanyPostalCode());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("company"));
+		$this->assertCount(1, $results);
+		$this->assertContainsOnlyInstancesOf("Zachspangler\\Tux\\Company", $results);
+
+		// grab the result from the array and validate it
+		$pdoCompany = $results[0];
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("company"));
+		$this->assertEquals($pdoCompany->getCompanyId(), $companyId);
+		$this->assertEquals($pdoCompany->getCompanyAddress(), $this->VALID_COMPANY_ADDRESS);
+		$this->assertEquals($pdoCompany->getCompanyCity(), $this->VALID_COMPANY_CITY);
+		$this->assertEquals($pdoCompany->getCompanyEmail(), $this->VALID_COMPANY_EMAIL2);
+		$this->assertEquals($pdoCompany->getCompanyHash(), $this->VALID_COMPANY_HASH);
+		$this->assertEquals($pdoCompany->getCompanyName(), $this->VALID_COMPANY_NAME);
+		$this->assertEquals($pdoCompany->getCompanyPhone(), $this->VALID_COMPANY_PHONE);
+		$this->assertEquals($pdoCompany->getCompanyPostalCode(), $this->VALID_COMPANY_POSTAL_CODE);
+		$this->assertEquals($pdoCompany->getCompanySalt(), $this->VALID_COMPANY_SALT);
+		$this->assertEquals($pdoCompany->getCompanyState(), $this->VALID_COMPANY_STATE);
+		$this->assertEquals($pdoCompany->getCompanyNotifications(), $this->VALID_COMPANY_NOTIFICATIONS);
+	}
+
+	/**
+	 * test grabbing a company by a postal code that does not exist
+	 **/
+	public function testGetInvalidCompanyByCompanyPostalCode() : void {
+		// grab a company by a city that does not exist
+		$company = Company::getCompanyByCompanyPostalCode($this->getPDO(), "87124");
+		$this->assertCount(0, $company);
+	}
 
 	/**
 	 * test grabbing a Company by state
 	 **/
-	public function testDeleteValidCompany(): void {}
+	public function testGetValidCompanyByCompanyState(): void {
+		// count the number of rows and save it for later
+		$numRows = $this->getConnection()->getRowCount("company");
+
+		// create a new Company and insert to into mySQL
+		$companyId = generateUuidV4();
+		$company = new Company($companyId, $this->VALID_COMPANY_ADDRESS, $this->VALID_COMPANY_CITY, $this->VALID_COMPANY_EMAIL, $this->VALID_COMPANY_HASH, $this->VALID_COMPANY_NAME, $this->VALID_COMPANY_PHONE, $this->VALID_COMPANY_POSTAL_CODE, $this->VALID_COMPANY_SALT, $this->VALID_COMPANY_STATE, $this->VALID_COMPANY_NOTIFICATIONS);
+		$company->insert($this->getPDO());
+
+		// grab the data from mySQL and enforce the fields match our expectations
+		$results = Company::getCompanyByCompanyState($this->getPDO(), $company->getCompanyState());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("company"));
+		$this->assertCount(1, $results);
+		$this->assertContainsOnlyInstancesOf("Zachspangler\\Tux\\Company", $results);
+
+		// grab the result from the array and validate it
+		$pdoCompany = $results[0];
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("company"));
+		$this->assertEquals($pdoCompany->getCompanyId(), $companyId);
+		$this->assertEquals($pdoCompany->getCompanyAddress(), $this->VALID_COMPANY_ADDRESS);
+		$this->assertEquals($pdoCompany->getCompanyCity(), $this->VALID_COMPANY_CITY);
+		$this->assertEquals($pdoCompany->getCompanyEmail(), $this->VALID_COMPANY_EMAIL2);
+		$this->assertEquals($pdoCompany->getCompanyHash(), $this->VALID_COMPANY_HASH);
+		$this->assertEquals($pdoCompany->getCompanyName(), $this->VALID_COMPANY_NAME);
+		$this->assertEquals($pdoCompany->getCompanyPhone(), $this->VALID_COMPANY_PHONE);
+		$this->assertEquals($pdoCompany->getCompanyPostalCode(), $this->VALID_COMPANY_POSTAL_CODE);
+		$this->assertEquals($pdoCompany->getCompanySalt(), $this->VALID_COMPANY_SALT);
+		$this->assertEquals($pdoCompany->getCompanyState(), $this->VALID_COMPANY_STATE);
+		$this->assertEquals($pdoCompany->getCompanyNotifications(), $this->VALID_COMPANY_NOTIFICATIONS);
+	}
+
+	/**
+	 * test grabbing a company by a state that does not exist
+	 **/
+	public function testGetInvalidCompanyByCompanyState() : void {
+		// grab a company by a city that does not exist
+		$company = Company::getCompanyByCompanyState($this->getPDO(), "Texas");
+		$this->assertCount(0, $company);
+	}
 
 	/**
 	 * test grabbing all companies
 	 **/
-	public function testDeleteValidCompany(): void {}
+	public function testGetAllValidCompanies(): void {
+		// count the number of rows and save it for later
+		$numRows = $this->getConnection()->getRowCount("company");
+
+		// create a new Company and insert to into mySQL
+		$companyId = generateUuidV4();
+		$company = new Company($companyId, $this->VALID_COMPANY_ADDRESS, $this->VALID_COMPANY_CITY, $this->VALID_COMPANY_EMAIL, $this->VALID_COMPANY_HASH, $this->VALID_COMPANY_NAME, $this->VALID_COMPANY_PHONE, $this->VALID_COMPANY_POSTAL_CODE, $this->VALID_COMPANY_SALT, $this->VALID_COMPANY_STATE, $this->VALID_COMPANY_NOTIFICATIONS);
+		$company->insert($this->getPDO());
+
+		// grab the data from mySQL and enforce the fields match our expectations
+		$results = Company::getAllCompanies($this->getPDO());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("company"));
+		$this->assertCount(1, $results);
+		$this->assertContainsOnlyInstancesOf("Zachspangler\\Tux\\Company", $results);
+
+		// grab the result from the array and validate it
+		$pdoCompany = $results[0];
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("company"));
+		$this->assertEquals($pdoCompany->getCompanyId(), $companyId);
+		$this->assertEquals($pdoCompany->getCompanyAddress(), $this->VALID_COMPANY_ADDRESS);
+		$this->assertEquals($pdoCompany->getCompanyCity(), $this->VALID_COMPANY_CITY);
+		$this->assertEquals($pdoCompany->getCompanyEmail(), $this->VALID_COMPANY_EMAIL2);
+		$this->assertEquals($pdoCompany->getCompanyHash(), $this->VALID_COMPANY_HASH);
+		$this->assertEquals($pdoCompany->getCompanyName(), $this->VALID_COMPANY_NAME);
+		$this->assertEquals($pdoCompany->getCompanyPhone(), $this->VALID_COMPANY_PHONE);
+		$this->assertEquals($pdoCompany->getCompanyPostalCode(), $this->VALID_COMPANY_POSTAL_CODE);
+		$this->assertEquals($pdoCompany->getCompanySalt(), $this->VALID_COMPANY_SALT);
+		$this->assertEquals($pdoCompany->getCompanyState(), $this->VALID_COMPANY_STATE);
+		$this->assertEquals($pdoCompany->getCompanyNotifications(), $this->VALID_COMPANY_NOTIFICATIONS);
+	}
 }

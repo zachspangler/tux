@@ -2,7 +2,7 @@
 namespace Zachspangler\Tux\Test;
 
 use Zachspangler\Tux\{
-	Company, Profile, Wedding, Card
+	Profile, Wedding, Card
 };
 // grab the class under scrutiny
 require_once(dirname(__DIR__) . "/autoload.php");
@@ -27,8 +27,7 @@ class CardTest extends TuxTest {
 	 * Wedding is the wedding the card is related to; this is for foreign key relations
 	 * @var Wedding $wedding
 	 **/
-	protected $tweet;
-
+	protected $wedding;
 	/**
 	 * Card Size - Chest
 	 * @var int $VALID_CARD_CHEST
@@ -65,6 +64,11 @@ class CardTest extends TuxTest {
 	 **/
 	protected $VALID_CARD_PANT = 10;
 	/**
+	 * Card Reviewed
+	 * @var int $VALID_CARD_REVIEWED
+	 **/
+	protected $VALID_CARD_REVIEWED = "true";
+	/**
 	 * Card Size - Shirt
 	 * @var int $VALID_CARD_SHIRT
 	 **/
@@ -94,32 +98,53 @@ class CardTest extends TuxTest {
 	 * @var int $VALID_CARD_WEIGHT
 	 **/
 	protected $VALID_CARD_WEIGHT2 = 150;
+	/**
+	 * valid hash to use
+	 * @var $VALID_HASH
+	 */
+	protected $VALID_PROFILE_HASH;
+	/**
+	 * valid salt to use to create the profile object to own the test
+	 * @var string $VALID_SALT
+	 */
+	protected $VALID_PROFILE_SALT;
+	/**
+	 * valid date of the wedding
+	 * @var \DateTime $VALID_WEDDING_DATE
+	 */
+	protected $VALID_WEDDING_DATE;
+	/**
+	 * valid date of the date the card should be returned
+	 * @var \DateTime $VALID_WEDDING_RETURN_BY_DATE
+	 */
+	protected $VALID_WEDDING_RETURN_BY_DATE;
+
 
 	/**
 	 * create dependent objects before running each test
 	 **/
 	public final function setUp() : void {
+
 		// run the default setUp() method first
 		parent::setUp();
+
 		// create a salt and hash for the mocked profile
 		$password = "abc123";
-		$this->VALID_SALT = bin2hex(random_bytes(32));
-		$this->VALID_HASH = hash_pbkdf2("sha512", $password, $this->VALID_SALT, 262144);
-		$this->VALID_ACTIVATION = bin2hex(random_bytes(16));
+		$this->VALID_PROFILE_SALT = bin2hex(random_bytes(32));
+		$this->VALID_PROFILE_HASH = hash_pbkdf2("sha512", $password, $this->VALID_PROFILE_SALT, 262144);
+
 		// create and insert the mocked profile
-		$profile = new Profile(generateUuidV4(), $this->VALID_PROFILE_ACTIVATION_TOKEN, $this->VALID_PROFILE_EMAIL1, $this->VALID_PROFILE_HASH, $this->VALID_PROFILE_NAME, $this->VALID_PROFILE_PHONE, $this->VALID_PROFILE_SALT);
+		$this->profile = new Profile(generateUuidV4(), "null", "test@email.com", $this->VALID_PROFILE_HASH, "Zach", "5555555555", $this->VALID_PROFILE_SALT);
 		$this->profile->insert($this->getPDO());
 
-		// create the and insert the mocked company
-		$company = new Company(generateUuidV4(), "123 Lake Rd", "Albuquerque", "nate@tux.com", $this->VALID_COMPANY_HASH, "Mr.Tux", "5555555555", "87124", $this->VALID_COMPANY_SALT, "NM", "1");
+	// create the dates for the wedding date
+		$this->VALID_WEDDING_DATE = new \DateTime();
+		$this->VALID_WEDDING_RETURN_BY_DATE = new \DateTime();
 
 		// create the and insert the mocked wedding
-		$this->wedding = new Wedding(generateUuidV4(), $this->profile->getProfileId(), "PHPUnit like test passing");
-		$this->tweet->insert($this->getPDO());
-		// calculate the date (just use the time the unit test was setup...)
-		$this->VALID_LIKEDATE = new \DateTime();
+		$this->wedding = new Wedding(generateUuidV4(), $this->profile->getProfileId(), $this->VALID_WEDDING_DATE, "Smith", $this->VALID_WEDDING_RETURN_BY_DATE);
+		$this->wedding->insert($this->getPDO());
 	}
-
 
 
 	/**
@@ -129,9 +154,8 @@ class CardTest extends TuxTest {
 		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("card");
 		$cardId = generateUuidV4();
-		$cardProfileId = generateUuidV4();
-		$cardWeddingId = generateUuidV4();
-		$card = new Card($cardId, $cardProfileId, $cardWeddingId, $this->VALID_CARD_CHEST, $this->VALID_CARD_COAT,$this->VALID_CARD_COMPLETE,$this->VALID_CARD_HEIGHT, $this->VALID_CARD_NECK, $this->VALID_CARD_OUTSEAM, $this->VALID_CARD_PANT, $this->VALID_CARD_SHIRT, $this->VALID_CARD_SHOE_SIZE, $this->VALID_CARD_SLEEVE, $this->VALID_CARD_UNDERARM, $this->VALID_CARD_WEIGHT);
+
+		$card = new Card($cardId, $this->profile->getProfileId(), $this->wedding->getWeddingId(), $this->VALID_CARD_CHEST, $this->VALID_CARD_COAT,$this->VALID_CARD_COMPLETE,$this->VALID_CARD_HEIGHT, $this->VALID_CARD_NECK, $this->VALID_CARD_OUTSEAM, $this->VALID_CARD_PANT, $this->VALID_CARD_SHIRT, $this->VALID_CARD_SHOE_SIZE, $this->VALID_CARD_SLEEVE, $this->VALID_CARD_UNDERARM, $this->VALID_CARD_WEIGHT);
 		$card->insert($this->getPDO());
 
 		// grab the data from mySQL and enforce the fields match our expectations
@@ -147,6 +171,7 @@ class CardTest extends TuxTest {
 		$this->assertEquals($pdoCard->getCardNeck(), $this->VALID_CARD_NECK);
 		$this->assertEquals($pdoCard->getCardOutseam(), $this->VALID_CARD_OUTSEAM);
 		$this->assertEquals($pdoCard->getCardPant(), $this->VALID_CARD_PANT);
+		$this->assertEquals($pdoCard->getCardReviewed(), $this->VALID_CARD_REVIEWED);
 		$this->assertEquals($pdoCard->getCardShirt(), $this->VALID_CARD_SHIRT);
 		$this->assertEquals($pdoCard->getCardShoeSize(), $this->VALID_CARD_SHOE_SIZE);
 		$this->assertEquals($pdoCard->getCardSleeve(), $this->VALID_CARD_SLEEVE);
@@ -162,10 +187,10 @@ class CardTest extends TuxTest {
 		// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("card");
 		$cardId = generateUuidV4();
-		$cardProfileId = generateUuidV4();
-		$cardWeddingId = generateUuidV4();
-		$card = new Card($cardId, $cardProfileId, $cardWeddingId, $this->VALID_CARD_CHEST, $this->VALID_CARD_COAT, $this->VALID_CARD_COMPLETE, $this->VALID_CARD_HEIGHT, $this->VALID_CARD_NECK, $this->VALID_CARD_OUTSEAM, $this->VALID_CARD_PANT, $this->VALID_CARD_SHIRT, $this->VALID_CARD_SHOE_SIZE, $this->VALID_CARD_SLEEVE, $this->VALID_CARD_UNDERARM, $this->VALID_CARD_WEIGHT);
+
+		$card = new Card($cardId, $this->profile->getProfileId(), $this->wedding->getWeddingId(), $this->VALID_CARD_CHEST, $this->VALID_CARD_COAT,$this->VALID_CARD_COMPLETE,$this->VALID_CARD_HEIGHT, $this->VALID_CARD_NECK, $this->VALID_CARD_OUTSEAM, $this->VALID_CARD_PANT, $this->VALID_CARD_SHIRT, $this->VALID_CARD_SHOE_SIZE, $this->VALID_CARD_SLEEVE, $this->VALID_CARD_UNDERARM, $this->VALID_CARD_WEIGHT);
 		$card->insert($this->getPDO());
+
 		// edit the Profile and update it in mySQL
 		$card->setCardWeight($this->VALID_CARD_WEIGHT2);
 		$card->update($this->getPDO());
@@ -182,6 +207,7 @@ class CardTest extends TuxTest {
 		$this->assertEquals($pdoCard->getCardNeck(), $this->VALID_CARD_NECK);
 		$this->assertEquals($pdoCard->getCardOutseam(), $this->VALID_CARD_OUTSEAM);
 		$this->assertEquals($pdoCard->getCardPant(), $this->VALID_CARD_PANT);
+		$this->assertEquals($pdoCard->getCardReviewed(), $this->VALID_CARD_REVIEWED);
 		$this->assertEquals($pdoCard->getCardShirt(), $this->VALID_CARD_SHIRT);
 		$this->assertEquals($pdoCard->getCardShoeSize(), $this->VALID_CARD_SHOE_SIZE);
 		$this->assertEquals($pdoCard->getCardSleeve(), $this->VALID_CARD_SLEEVE);
@@ -194,12 +220,11 @@ class CardTest extends TuxTest {
 	 **/
 
 	public function testDeleteValidProfile(): void {
-// count the number of rows and save it for later
+	// count the number of rows and save it for later
 		$numRows = $this->getConnection()->getRowCount("card");
 		$cardId = generateUuidV4();
-		$cardProfileId = generateUuidV4();
-		$cardWeddingId = generateUuidV4();
-		$card = new Card($cardId, $cardProfileId, $cardWeddingId, $this->VALID_CARD_CHEST, $this->VALID_CARD_COAT, $this->VALID_CARD_COMPLETE, $this->VALID_CARD_HEIGHT, $this->VALID_CARD_NECK, $this->VALID_CARD_OUTSEAM, $this->VALID_CARD_PANT, $this->VALID_CARD_SHIRT, $this->VALID_CARD_SHOE_SIZE, $this->VALID_CARD_SLEEVE, $this->VALID_CARD_UNDERARM, $this->VALID_CARD_WEIGHT);
+
+		$card = new Card($cardId, $this->profile->getProfileId(), $this->wedding->getWeddingId(), $this->VALID_CARD_CHEST, $this->VALID_CARD_COAT,$this->VALID_CARD_COMPLETE,$this->VALID_CARD_HEIGHT, $this->VALID_CARD_NECK, $this->VALID_CARD_OUTSEAM, $this->VALID_CARD_PANT, $this->VALID_CARD_SHIRT, $this->VALID_CARD_SHOE_SIZE, $this->VALID_CARD_SLEEVE, $this->VALID_CARD_UNDERARM, $this->VALID_CARD_WEIGHT);
 		$card->insert($this->getPDO());
 
 		// delete the Profile from mySQL
@@ -218,9 +243,8 @@ class CardTest extends TuxTest {
 	public function testGetValidCardByCardId(): void {
 		$numRows = $this->getConnection()->getRowCount("card");
 		$cardId = generateUuidV4();
-		$cardProfileId = generateUuidV4();
-		$cardWeddingId = generateUuidV4();
-		$card = new Card($cardId, $cardProfileId, $cardWeddingId, $this->VALID_CARD_CHEST, $this->VALID_CARD_COAT, $this->VALID_CARD_COMPLETE, $this->VALID_CARD_HEIGHT, $this->VALID_CARD_NECK, $this->VALID_CARD_OUTSEAM, $this->VALID_CARD_PANT, $this->VALID_CARD_SHIRT, $this->VALID_CARD_SHOE_SIZE, $this->VALID_CARD_SLEEVE, $this->VALID_CARD_UNDERARM, $this->VALID_CARD_WEIGHT);
+
+		$card = new Card($cardId, $this->profile->getProfileId(), $this->wedding->getWeddingId(), $this->VALID_CARD_CHEST, $this->VALID_CARD_COAT,$this->VALID_CARD_COMPLETE,$this->VALID_CARD_HEIGHT, $this->VALID_CARD_NECK, $this->VALID_CARD_OUTSEAM, $this->VALID_CARD_PANT, $this->VALID_CARD_SHIRT, $this->VALID_CARD_SHOE_SIZE, $this->VALID_CARD_SLEEVE, $this->VALID_CARD_UNDERARM, $this->VALID_CARD_WEIGHT);
 		$card->insert($this->getPDO());
 
 		// grab the data from mySQL and enforce the fields match our expectations
@@ -236,6 +260,7 @@ class CardTest extends TuxTest {
 		$this->assertEquals($pdoCard->getCardNeck(), $this->VALID_CARD_NECK);
 		$this->assertEquals($pdoCard->getCardOutseam(), $this->VALID_CARD_OUTSEAM);
 		$this->assertEquals($pdoCard->getCardPant(), $this->VALID_CARD_PANT);
+		$this->assertEquals($pdoCard->getCardReviewed(), $this->VALID_CARD_REVIEWED);
 		$this->assertEquals($pdoCard->getCardShirt(), $this->VALID_CARD_SHIRT);
 		$this->assertEquals($pdoCard->getCardShoeSize(), $this->VALID_CARD_SHOE_SIZE);
 		$this->assertEquals($pdoCard->getCardSleeve(), $this->VALID_CARD_SLEEVE);
@@ -252,6 +277,7 @@ class CardTest extends TuxTest {
 		$card = Card::getCardByCardId($this->getPDO(), $fakeCardId);
 		$this->assertNull($card);
 	}
+
 	/**
 	 * test grabbing a Card by the Profile Id
 	 **/
@@ -259,13 +285,18 @@ class CardTest extends TuxTest {
 	public function testGetValidCardByProfileId() {
 		$numRows = $this->getConnection()->getRowCount("card");
 		$cardId = generateUuidV4();
-		$cardProfileId = generateUuidV4();
-		$cardWeddingId = generateUuidV4();
-		$card = new Card($cardId, $cardProfileId, $cardWeddingId, $this->VALID_CARD_CHEST, $this->VALID_CARD_COAT, $this->VALID_CARD_COMPLETE, $this->VALID_CARD_HEIGHT, $this->VALID_CARD_NECK, $this->VALID_CARD_OUTSEAM, $this->VALID_CARD_PANT, $this->VALID_CARD_SHIRT, $this->VALID_CARD_SHOE_SIZE, $this->VALID_CARD_SLEEVE, $this->VALID_CARD_UNDERARM, $this->VALID_CARD_WEIGHT);
+
+		$card = new Card($cardId, $this->profile->getProfileId(), $this->wedding->getWeddingId(), $this->VALID_CARD_CHEST, $this->VALID_CARD_COAT,$this->VALID_CARD_COMPLETE,$this->VALID_CARD_HEIGHT, $this->VALID_CARD_NECK, $this->VALID_CARD_OUTSEAM, $this->VALID_CARD_PANT, $this->VALID_CARD_SHIRT, $this->VALID_CARD_SHOE_SIZE, $this->VALID_CARD_SLEEVE, $this->VALID_CARD_UNDERARM, $this->VALID_CARD_WEIGHT);
 		$card->insert($this->getPDO());
 
 		// grab the data from mySQL and enforce the fields match our expectations
-		$pdoCard = Card::getCardByProfileId($this->getPDO(), $profile->getProfileId());
+		$results = Card::getCardByProfileId($this->getPDO(), $card->getCardProfileId());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("card"));
+		$this->assertCount(1, $results);
+		$this->assertContainsOnlyInstancesOf("Zachspangler\\Tux\\Card", $results);
+
+		// grab the result from the array and validate it
+		$pdoCard = $results[0];
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("card"));
 		$this->assertEquals($pdoCard->getCardId(), $cardId);
 		$this->assertEquals($pdoCard->getCardProfileId(),$this->profile->getProfileId());
@@ -277,11 +308,21 @@ class CardTest extends TuxTest {
 		$this->assertEquals($pdoCard->getCardNeck(), $this->VALID_CARD_NECK);
 		$this->assertEquals($pdoCard->getCardOutseam(), $this->VALID_CARD_OUTSEAM);
 		$this->assertEquals($pdoCard->getCardPant(), $this->VALID_CARD_PANT);
+		$this->assertEquals($pdoCard->getCardReviewed(), $this->VALID_CARD_REVIEWED);
 		$this->assertEquals($pdoCard->getCardShirt(), $this->VALID_CARD_SHIRT);
 		$this->assertEquals($pdoCard->getCardShoeSize(), $this->VALID_CARD_SHOE_SIZE);
 		$this->assertEquals($pdoCard->getCardSleeve(), $this->VALID_CARD_SLEEVE);
 		$this->assertEquals($pdoCard->getCardUnderarm(), $this->VALID_CARD_UNDERARM);
 		$this->assertEquals($pdoCard->getCardWeight(), $this->VALID_CARD_WEIGHT);
+	}
+
+	/**
+	 * test grabbing a card by a profile that does not exist
+	 **/
+	public function testGetInvalidCardByProfileId() : void {
+		// grab a company by a city that does not exist
+		$card = Card::getCardByProfileId($this->getPDO(), generateUuidV4());
+		$this->assertCount(0, $card);
 	}
 
 	/**
@@ -291,13 +332,18 @@ class CardTest extends TuxTest {
 	public function testGetValidCardByWeddingId() {
 		$numRows = $this->getConnection()->getRowCount("card");
 		$cardId = generateUuidV4();
-		$cardProfileId = generateUuidV4();
-		$cardWeddingId = generateUuidV4();
-		$card = new Card($cardId, $cardProfileId, $cardWeddingId, $this->VALID_CARD_CHEST, $this->VALID_CARD_COAT, $this->VALID_CARD_COMPLETE, $this->VALID_CARD_HEIGHT, $this->VALID_CARD_NECK, $this->VALID_CARD_OUTSEAM, $this->VALID_CARD_PANT, $this->VALID_CARD_SHIRT, $this->VALID_CARD_SHOE_SIZE, $this->VALID_CARD_SLEEVE, $this->VALID_CARD_UNDERARM, $this->VALID_CARD_WEIGHT);
+
+		$card = new Card($cardId, $this->profile->getProfileId(), $this->wedding->getWeddingId(), $this->VALID_CARD_CHEST, $this->VALID_CARD_COAT,$this->VALID_CARD_COMPLETE,$this->VALID_CARD_HEIGHT, $this->VALID_CARD_NECK, $this->VALID_CARD_OUTSEAM, $this->VALID_CARD_PANT, $this->VALID_CARD_SHIRT, $this->VALID_CARD_SHOE_SIZE, $this->VALID_CARD_SLEEVE, $this->VALID_CARD_UNDERARM, $this->VALID_CARD_WEIGHT);
 		$card->insert($this->getPDO());
 
 		// grab the data from mySQL and enforce the fields match our expectations
-		$pdoCard = Card::getCardByCardWeddingId($this->assertEquals($pdoCard->getCardWeddingId(),$this->wedding->getWeddingId());
+		$results = Card::getCardByWeddingId($this->getPDO(), $card->getCardWeddingId());
+		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("card"));
+		$this->assertCount(1, $results);
+		$this->assertContainsOnlyInstancesOf("Zachspangler\\Tux\\Card", $results);
+
+		// grab the result from the array and validate it
+		$pdoCard = $results[0];
 		$this->assertEquals($numRows + 1, $this->getConnection()->getRowCount("card"));
 		$this->assertEquals($pdoCard->getCardId(), $cardId);
 		$this->assertEquals($pdoCard->getCardProfileId(),$this->profile->getProfileId());
@@ -309,10 +355,20 @@ class CardTest extends TuxTest {
 		$this->assertEquals($pdoCard->getCardNeck(), $this->VALID_CARD_NECK);
 		$this->assertEquals($pdoCard->getCardOutseam(), $this->VALID_CARD_OUTSEAM);
 		$this->assertEquals($pdoCard->getCardPant(), $this->VALID_CARD_PANT);
+		$this->assertEquals($pdoCard->getCardReviewed(), $this->VALID_CARD_REVIEWED);
 		$this->assertEquals($pdoCard->getCardShirt(), $this->VALID_CARD_SHIRT);
 		$this->assertEquals($pdoCard->getCardShoeSize(), $this->VALID_CARD_SHOE_SIZE);
 		$this->assertEquals($pdoCard->getCardSleeve(), $this->VALID_CARD_SLEEVE);
 		$this->assertEquals($pdoCard->getCardUnderarm(), $this->VALID_CARD_UNDERARM);
 		$this->assertEquals($pdoCard->getCardWeight(), $this->VALID_CARD_WEIGHT);
+	}
+
+	/**
+	 * test grabbing a card by a profile that does not exist
+	 **/
+	public function testGetInvalidCardByWeddingId() : void {
+		// grab a company by a city that does not exist
+		$card = Card::getCardByWeddingId($this->getPDO(), generateUuidV4());
+		$this->assertCount(0, $card);
 	}
 }

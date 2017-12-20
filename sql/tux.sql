@@ -69,6 +69,7 @@ CREATE TABLE card (
 	cardNeck DECIMAL(4,2) NOT NULL,
 	cardOutseam DECIMAL(4,2) NOT NULL,
 	cardPant DECIMAL(4,2) NOT NULL,
+	cardReviewed VARCHAR(255) NOT NULL,
 	cardShirt DECIMAL(4,2) NOT NULL,
 	cardShoeSize DECIMAL(4,2) NOT NULL,
 	cardSleeve DECIMAL(4,2) NOT NULL,

@@ -67,6 +67,11 @@ class Card implements \JsonSerializable {
 	private $cardPant;
 	/**
 	 * name of the company
+	 * @var string $cardReviewed
+	 **/
+	private $cardReviewed;
+	/**
+	 * name of the company
 	 * @var int $cardShirt
 	 **/
 	private $cardShirt;
@@ -103,6 +108,7 @@ class Card implements \JsonSerializable {
 	 * @param int $newCardNeck
 	 * @param int $newCardOutseam
 	 * @param int $newCardPant
+	 * @param boolean $newCardReviewed
 	 * @param int $newCardShirt
 	 * @param int $newCardShoeSize
 	 * @param int $newCardSleeve
@@ -113,7 +119,7 @@ class Card implements \JsonSerializable {
 	 * @throws \TypeError if a data type violates a data hint
 	 * @throws \Exception if some other exception occurs
 	 **/
-	public function __construct($newCardId, $newCardProfileId, $newCardWeddingId, int $newCardChest, int $newCardCoat, boolean $newCardComplete, int $newCardHeight, int $newCardNeck, int $newCardOutseam, int $newCardPant, int $newCardShirt, int $newCardShoeSize, int $newCardSleeve, int $newCardUndearm, int $newCardWeight) {
+	public function __construct($newCardId, $newCardProfileId, $newCardWeddingId, int $newCardChest, int $newCardCoat, boolean $newCardComplete, int $newCardHeight, int $newCardNeck, int $newCardOutseam, int $newCardPant, boolean $newCardReviewed, int $newCardShirt, int $newCardShoeSize, int $newCardSleeve, int $newCardUndearm, int $newCardWeight) {
 		try {
 			$this->setCardId($newCardId);
 			$this->setCardProfileId($newCardProfileId);
@@ -125,6 +131,7 @@ class Card implements \JsonSerializable {
 			$this->setCardNeck($newCardNeck);
 			$this->setCardOutseam($newCardOutseam);
 			$this->setCardPant($newCardPant);
+			$this->setCardReviewed($newCardReviewed);
 			$this->setCardShirt($newCardShirt);
 			$this->setCardShoeSize($newCardShoeSize);
 			$this->setCardSleeve ($newCardSleeve);
@@ -443,6 +450,38 @@ class Card implements \JsonSerializable {
 	}
 
 	/**
+	 * accessor method for cardReviewed
+	 *
+	 * @return boolean for cardReviewed
+	 **/
+	public function getCardReviewed(): boolean {
+		return ($this->cardReviewed);
+	}
+
+	/**
+	 * mutator method for cardReviewed
+	 *
+	 * @param int $newCardShirt value of cardReviewed
+	 * @throws \RangeException if $newCardReviewed is positive
+	 *  @throws \TypeError if the input is not correct type
+	 **/
+	public function setCardReviewed($newCardReviewed): void {
+		if($newCardReviewed === null) {
+			$this->cardReviewed = null;
+			return;
+		}
+		// verify the company city is secure
+		$newCardReviewed = trim($newCardReviewed);
+		$newCardReviewed = filter_var($newCardReviewed, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		// verify the company city will fit in the database
+		if(strlen($newCardReviewed) > 255) {
+			throw(new \RangeException("Card string is too long"));
+		}
+		// store the id
+		$this->cardReviewed = $newCardReviewed;
+	}
+
+	/**
 	 * accessor method for cardShirt
 	 *
 	 * @return int for cardShirt
@@ -473,6 +512,7 @@ class Card implements \JsonSerializable {
 		// store the id
 		$this->cardShirt = $newCardShirt;
 	}
+
 
 	/**
 	 * accessor method for cardShoeSize
@@ -611,9 +651,9 @@ class Card implements \JsonSerializable {
 	 **/
 	public function insert(\PDO $pdo): void {
 		// create query template
-		$query = "INSERT INTO card(cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, cardPant, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight) VALUES (:cardId, :cardProfileId, :cardWeddingId, :cardChest, :cardCoat, :cardComplete, :cardHeight, :cardNeck, :cardOutseam, :cardPant, :cardShirt, :cardShoeSize, :cardSleeve, :cardUnderarm, :cardWeight)";
+		$query = "INSERT INTO card(cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, cardPant, cardReviewed, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight) VALUES (:cardId, :cardProfileId, :cardWeddingId, :cardChest, :cardCoat, :cardComplete, :cardHeight, :cardNeck, :cardOutseam, :cardPant, :cardReviewed, :cardShirt, :cardShoeSize, :cardSleeve, :cardUnderarm, :cardWeight)";
 		$statement = $pdo->prepare($query);
-		$parameters = ["cardId" => $this->cardId->getBytes(), "cardProfileId" => $this->cardProfileId->getBytes(), "cardWeddingId" => $this->cardWeddingId->getBytes(), "cardChest" => $this->cardChest, "cardCoat" => $this->cardCoat, "cardComplete" => $this->cardComplete, "cardHeight" => $this->cardHeight, "cardNeck" => $this->cardNeck, "cardOutseam" => $this->cardOutseam, "cardPant" => $this->cardPant, "cardShirt" => $this->cardShirt, "cardShoeSize" => $this->cardShoeSize, "cardSleeve" => $this->cardSleeve, "cardUnderarm" => $this->cardUnderarm, "cardWeight" => $this->cardWeight];
+		$parameters = ["cardId" => $this->cardId->getBytes(), "cardProfileId" => $this->cardProfileId->getBytes(), "cardWeddingId" => $this->cardWeddingId->getBytes(), "cardChest" => $this->cardChest, "cardCoat" => $this->cardCoat, "cardComplete" => $this->cardComplete, "cardHeight" => $this->cardHeight, "cardNeck" => $this->cardNeck, "cardOutseam" => $this->cardOutseam, "cardPant" => $this->cardPant, "cardReviewed" => $this->cardReviewed, "cardShirt" => $this->cardShirt, "cardShoeSize" => $this->cardShoeSize, "cardSleeve" => $this->cardSleeve, "cardUnderarm" => $this->cardUnderarm, "cardWeight" => $this->cardWeight];
 		$statement->execute($parameters);
 	}
 
@@ -641,11 +681,11 @@ class Card implements \JsonSerializable {
 	 **/
 	public function update(\PDO $pdo): void {
 		// create query template
-		$query = "UPDATE card SET cardId = :cardId, cardProfileId = :cardProfileId, cardWeddingId = :cardWeddingId, cardChest = :cardChest, cardCoat= :cardCoat, cardComplete = :cardComplete, cardHeight = :cardHeight, cardNeck = :cardNeck, cardOutseam = :cardOutseam, cardPant = :cardPant, cardShirt = :cardShirt, cardShoeSize = :cardShoeSize, cardSleeve = :cardSleeve, cardUnderarm = :cardUnderarm, cardWeight = :cardWeight WHERE cardId = :cardId";
+		$query = "UPDATE card SET cardId = :cardId, cardProfileId = :cardProfileId, cardWeddingId = :cardWeddingId, cardChest = :cardChest, cardCoat= :cardCoat, cardComplete = :cardComplete, cardHeight = :cardHeight, cardNeck = :cardNeck, cardOutseam = :cardOutseam, cardPant = :cardPant, cardReviewed = :cardReviewed cardShirt = :cardShirt, cardShoeSize = :cardShoeSize, cardSleeve = :cardSleeve, cardUnderarm = :cardUnderarm, cardWeight = :cardWeight WHERE cardId = :cardId";
 		$statement = $pdo->prepare($query);
 
 		// bind the member variables to the place holders in the template
-		$parameters = ["cardId" => $this->cardId->getBytes(), "cardProfileId" => $this->cardProfileId->getBytes(), "cardWeddingId" => $this->cardWeddingId->getBytes(), "cardChest" => $this->cardChest, "cardCoat" => $this->cardCoat, "cardComplete" => $this->cardComplete, "cardHeight" => $this->cardHeight, "cardNeck" => $this->cardNeck, "cardOutseam" => $this->cardOutseam, "cardPant" => $this->cardPant, "cardShirt" => $this->cardShirt, "cardShoeSize" => $this->cardShoeSize, "cardSleeve" => $this->cardSleeve, "cardUnderarm" => $this->cardUnderarm, "cardWeight" => $this->cardWeight];
+		$parameters = ["cardId" => $this->cardId->getBytes(), "cardProfileId" => $this->cardProfileId->getBytes(), "cardWeddingId" => $this->cardWeddingId->getBytes(), "cardChest" => $this->cardChest, "cardCoat" => $this->cardCoat, "cardComplete" => $this->cardComplete, "cardHeight" => $this->cardHeight, "cardNeck" => $this->cardNeck, "cardOutseam" => $this->cardOutseam, "cardPant" => $this->cardPant, "cardReviewed" => $this->cardReviewed, "cardShirt" => $this->cardShirt, "cardShoeSize" => $this->cardShoeSize, "cardSleeve" => $this->cardSleeve, "cardUnderarm" => $this->cardUnderarm, "cardWeight" => $this->cardWeight];
 		$statement->execute($parameters);
 	}
 
@@ -658,7 +698,7 @@ class Card implements \JsonSerializable {
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws \TypeError when a variable are not the correct data type
 	 **/
-	public static function getCardByCardId(\PDO $pdo, string $cardId):?Card {
+	public static function getCardByCardId(\PDO $pdo, string $cardId): ?Card {
 
 		// sanitize the card id before searching
 		try {
@@ -667,7 +707,7 @@ class Card implements \JsonSerializable {
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
 		}
 		// create query template
-		$query = "SELECT cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, cardPant, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight FROM card WHERE cardId = :cardId";
+		$query = "SELECT cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, cardPant, cardReviewed, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight FROM card WHERE cardId = :cardId";
 		$statement = $pdo->prepare($query);
 
 		// bind the card id to the place holder in the template
@@ -680,7 +720,7 @@ class Card implements \JsonSerializable {
 			$statement->setFetchMode(\PDO::FETCH_ASSOC);
 			$row = $statement->fetch();
 			if($row !== false) {
-				$card = new Card($row["cardId"], $row["cardProfileId"], $row["cardWeddingId"], $row["cardChest"], $row["cardCoat"],  $row["cardComplete"], $row["cardHeight"], $row["cardNeck"], $row["cardOutseam"], $row["cardPant"], $row["cardShirt"], $row["cardShoeSize"], $row["cardSleeve"], $row["cardUnderarm"], $row["cardWeight"]);
+				$card = new Card($row["cardId"], $row["cardProfileId"], $row["cardWeddingId"], $row["cardChest"], $row["cardCoat"],  $row["cardComplete"], $row["cardHeight"], $row["cardNeck"], $row["cardOutseam"], $row["cardPant"], $row["cardReviewed"], $row["cardShirt"], $row["cardShoeSize"], $row["cardSleeve"], $row["cardUnderarm"], $row["cardWeight"]);
 			}
 		} catch(\Exception $exception) {
 
@@ -699,7 +739,7 @@ class Card implements \JsonSerializable {
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws \TypeError when a variable are not the correct data type
 	 **/
-	public static function getCardByProfileId(\PDO $pdo, string $cardProfileId):?Card {
+	public static function getCardByProfileId(\PDO $pdo, string $cardProfileId): \SPLFixedArray {
 		// sanitize the profile id before searching
 		try {
 			$cardProfileId = self::validateUuid($cardProfileId);
@@ -707,7 +747,7 @@ class Card implements \JsonSerializable {
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
 		}
 		// create query template
-		$query = "SELECT cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, cardPant, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight FROM card WHERE cardId = :cardId";
+		$query = "SELECT cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, cardPant, cardReviewed, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight FROM card WHERE cardId = :cardId";
 		$statement = $pdo->prepare($query);
 
 		// bind the profile id to the place holder in the template
@@ -719,7 +759,7 @@ class Card implements \JsonSerializable {
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
-				$card = new Card($row["cardId"], $row["cardProfileId"], $row["cardWeddingId"], $row["cardChest"], $row["cardCoat"],  $row["cardComplete"], $row["cardHeight"], $row["cardNeck"], $row["cardOutseam"], $row["cardPant"], $row["cardShirt"], $row["cardShoeSize"], $row["cardSleeve"], $row["cardUnderarm"], $row["cardWeight"]);
+				$card = new Card($row["cardId"], $row["cardProfileId"], $row["cardWeddingId"], $row["cardChest"], $row["cardCoat"],  $row["cardComplete"], $row["cardHeight"], $row["cardNeck"], $row["cardOutseam"], $row["cardPant"], $row["cardReviewed"], $row["cardShirt"], $row["cardShoeSize"], $row["cardSleeve"], $row["cardUnderarm"], $row["cardWeight"]);
 				$cards[$cards->key()] = $card;
 				$cards->next();
 			} catch(\Exception $exception) {
@@ -739,7 +779,7 @@ class Card implements \JsonSerializable {
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws \TypeError when a variable are not the correct data type
 	 **/
-	public static function getCardByWeddingId(\PDO $pdo, string $cardWeddingId):?Card {
+	public static function getCardByWeddingId(\PDO $pdo, string $cardWeddingId): \SPLFixedArray {
 		// sanitize the profile id before searching
 		try {
 			$cardWeddingId = self::validateUuid($cardWeddingId);
@@ -747,7 +787,7 @@ class Card implements \JsonSerializable {
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
 		}
 		// create query template
-		$query = "SELECT cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, cardPant, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight FROM card WHERE cardId = :cardId";
+		$query = "SELECT cardId, cardProfileId, cardWeddingId, cardChest, cardCoat, cardComplete, cardHeight, cardNeck, cardOutseam, cardPant, cardReviewed, cardShirt, cardShoeSize, cardSleeve, cardUnderarm, cardWeight FROM card WHERE cardId = :cardId";
 		$statement = $pdo->prepare($query);
 
 		// bind the profile id to the place holder in the template
@@ -759,7 +799,7 @@ class Card implements \JsonSerializable {
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
-				$card = new Card($row["cardId"], $row["cardProfileId"], $row["cardWeddingId"], $row["cardChest"], $row["cardCoat"],  $row["cardComplete"], $row["cardHeight"], $row["cardNeck"], $row["cardOutseam"], $row["cardPant"], $row["cardShirt"], $row["cardShoeSize"], $row["cardSleeve"], $row["cardUnderarm"], $row["cardWeight"]);
+				$card = new Card($row["cardId"], $row["cardProfileId"], $row["cardWeddingId"], $row["cardChest"], $row["cardCoat"],  $row["cardComplete"], $row["cardHeight"], $row["cardNeck"], $row["cardOutseam"], $row["cardPant"], $row["cardReviewed"], $row["cardShirt"], $row["cardShoeSize"], $row["cardSleeve"], $row["cardUnderarm"], $row["cardWeight"]);
 				$cards[$cards->key()] = $card;
 				$cards->next();
 			} catch(\Exception $exception) {
@@ -788,7 +828,7 @@ class Card implements \JsonSerializable {
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
-				$card = new Card($row["cardId"], $row["cardProfileId"], $row["cardWeddingId"], $row["cardChest"], $row["cardCoat"],  $row["cardComplete"], $row["cardHeight"], $row["cardNeck"], $row["cardOutseam"], $row["cardPant"], $row["cardShirt"], $row["cardShoeSize"], $row["cardSleeve"], $row["cardUnderarm"], $row["cardWeight"]);
+				$card = new Card($row["cardId"], $row["cardProfileId"], $row["cardWeddingId"], $row["cardChest"], $row["cardCoat"],  $row["cardComplete"], $row["cardHeight"], $row["cardNeck"], $row["cardOutseam"], $row["cardPant"], $row["cardReviewed"], $row["cardShirt"], $row["cardShoeSize"], $row["cardSleeve"], $row["cardUnderarm"], $row["cardWeight"]);
 				$cards[$cards->key()] = $card;
 				$cards->next();
 			} catch(\Exception $exception) {

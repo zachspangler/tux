@@ -252,7 +252,7 @@ class WeddingParty implements \JsonSerializable {
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws \TypeError when a variable are not the correct data type
 	 **/
-	public static function getWeddingPartyByWeddingPartyWeddingId(\PDO $pdo, string $weddingPartyWeddingId):?WeddingParty {
+	public static function getWeddingPartyByWeddingPartyWeddingId(\PDO $pdo, string $weddingPartyWeddingId): \SPLFixedArray {
 		// sanitize the wedding party wedding id before searching
 		try {
 			$weddingPartyWeddingId = self::validateUuid($weddingPartyWeddingId);
@@ -292,7 +292,7 @@ class WeddingParty implements \JsonSerializable {
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws \TypeError when a variable are not the correct data type
 	 **/
-	public static function getWeddingPartyByWeddingPartyProfileId(\PDO $pdo, string $weddingPartyProfileId):?WeddingParty {
+	public static function getWeddingPartyByWeddingPartyProfileId(\PDO $pdo, string $weddingPartyProfileId): \SPLFixedArray {
 		// sanitize the wedding party wedding id before searching
 		try {
 			$weddingPartyProfileId = self::validateUuid($weddingPartyProfileId);

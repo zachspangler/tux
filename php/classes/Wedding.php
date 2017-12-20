@@ -211,6 +211,52 @@ class Wedding implements \JsonSerializable {
 	}
 
 	/**
+	 * inserts this Wedding into mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
+	public function insert(\PDO $pdo): void {
+		// create query template
+		$query = "INSERT INTO wedding(weddingId, weddingCompanyId, weddingDate, weddingName, weddingReturnByDate) VALUES (:weddingId, :weddingCompanyId, :weddingDate, :weddingName, :weddingReturnByDate)";
+		$statement = $pdo->prepare($query);
+		$parameters = ["weddingId" => $this->weddingId->getBytes(), "weddingCompanyId"=> $this->weddingCompanyId->getBytes(), "weddingDate"=> $this->weddingDate, "weddingName"=> $this->weddingName, "weddingReturnByDate" => $this->weddingReturnByDate];
+		$statement->execute($parameters);
+	}
+
+	/**
+	 * deletes this Wedding from mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
+	public function delete(\PDO $pdo): void {
+		// create query template
+		$query = "DELETE FROM wedding WHERE weddingId = :weddingId";
+		$statement = $pdo->prepare($query);
+		// bind the member variables to the place holders in the template
+		$parameters = ["weddingId" => $this->weddingId->getBytes()];
+		$statement->execute($parameters);
+	}
+
+	/**
+	 * updates this wedding from mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 **/
+	public function update(\PDO $pdo): void {
+		// create query template
+		$query = "UPDATE wedding SET weddingId = :weddingId, weddingCompanyId = :weddingCompanyId, weddingDate = :weddingDate, weddingName = :weddingName, weddingReturnByDate = :weddingReturnByDate WHERE weddingId = :weddingId";
+		$statement = $pdo->prepare($query);
+		// bind the member variables to the place holders in the template
+		$parameters = ["weddingId" => $this->weddingId->getBytes(), "weddingCompanyId"=> $this->weddingCompanyId->getBytes(), "weddingDate"=> $this->weddingDate, "weddingName"=> $this->weddingName, "weddingReturnByDate" => $this->weddingReturnByDate];
+		$statement->execute($parameters);
+	}
+
+	/**
 	 * gets the wedding by wedding id
 	 *
 	 * @param \PDO $pdo $pdo PDO connection object
@@ -258,7 +304,7 @@ class Wedding implements \JsonSerializable {
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws \TypeError when a variable are not the correct data type
 	 **/
-	public static function getWeddingByCompanyId(\PDO $pdo, string $weddingCompanyId):?Wedding {
+	public static function getWeddingByCompanyId(\PDO $pdo, string $weddingCompanyId): \SPLFixedArray{
 		// sanitize the wedding id before searching
 		try {
 			$weddingCompanyId = self::validateUuid($weddingCompanyId);
