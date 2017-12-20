@@ -6,6 +6,21 @@ body {
 	font-family: 'Lato Light',Helvetica,sans-serif;
 }
 
+.section-title {
+	font-family: 'Raleway', sans-serif;
+	font-weight: 900;
+}
+
+.landing-image {
+	background-size: contain;
+	height: 50%;
+	width: auto;
+}
+
+#landing-page-jumbo {
+	background-image: url("https://dl.dropboxusercontent.com/s/g2zstjehmkpveea/IMG_2314.JPG.jpeg");
+	background-size: cover;
+}
 /**************
 *HOW IT WORKS
 ****************/

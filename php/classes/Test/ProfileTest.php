@@ -1,5 +1,6 @@
 <?php
 namespace Zachspangler\Tux\Test;
+
 use Zachspangler\Tux\Profile;
 
 // grab the class under scrutiny

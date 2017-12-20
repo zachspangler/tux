@@ -2,10 +2,10 @@
 	<testsuites>
 		<testsuite name="Tux">
 			<file>ProfileTest.php</file>
-			<file>CompanyTest.php</file>
-			<file>WeddingTest.php</file>
-			<file>WeddingPartyTest.php</file>
-			<file>CardTest.php</file>
+			<!--<file>CompanyTest.php</file>-->
+			<!--<file>WeddingTest.php</file>-->
+			<!--<file>WeddingPartyTest.php</file>-->
+			<!--<file>CardTest.php</file>-->
 		</testsuite>
 	</testsuites>
 	<filter>
