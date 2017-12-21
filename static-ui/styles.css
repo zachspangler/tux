@@ -13,21 +13,42 @@ body {
 
 .landing-image {
 	background-size: contain;
-	height: 50%;
+	height: 20%;
 	width: auto;
 }
 
+/**************
+*JUMBOTRON
+****************/
 #landing-page-jumbo {
 	background-image: url("https://dl.dropboxusercontent.com/s/g2zstjehmkpveea/IMG_2314.JPG.jpeg");
 	background-size: cover;
+	background-position: center;
+	height: 40em;
+	opacity: .5;
 }
+
+
 /**************
 *HOW IT WORKS
 ****************/
-.tux {
-	background-size: contain;
-	height: 75%;
-	width: auto;
+.about {
+	height: 25em;
+	text-align: center;
+}
+
+
+#your-job {
+	background-color: #E9E9E9;
+}
+
+.step-detail {
+	text-indent: 50px;
+}
+
+.step {
+	font-family: 'Stardos Stencil', cursive;
+	font-size: 2em;
 }
 
 
