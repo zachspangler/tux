@@ -34,6 +34,15 @@
 
 		<!-- Google reCAPTCHA -->
 
+		<!-- SideNav Script -->
+		<script>
+			$(document).ready(function () {
+				$('#sidebarCollapse').on('click', function () {
+					$('#sidebar').toggleClass('active');
+				});
+			});
+		</script>
+
 		<!--Google Fonts -->
 		<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
 
@@ -42,27 +51,30 @@
 				type="image/x-icon">
 	</head>
 	<body>
-		<section>
-		<h1 class="mb-3">Weddings</h1>
-			<button class="m-4">Create Wedding</button>
-		<table class="table justify-content-center table-striped table-bordered table-hover">
-			<tr>
-				<th>Number</th>
-				<th>Name</th>
-				<th>Wedding Date</th>
-				<th>Return By Date</th>
-				<th>Card Received</th>
-				<th>Status</th>
-			</tr>
-			<tr>
-				<th>1</th>
-				<th>Zach</th>
-				<th>9/23/17</th>
-				<th>9/1/17</th>
-				<th>3 of 6 (50%)</th>
-				<th>Need Review</th>
-			</tr>
-		</table>
-		</section>
+		<div class="wrapper">
+
+			<nav id="sidebar">
+				<!-- Sidebar Header -->
+				<div class="sidebar-header">
+					<h3>Menu</h3>
+				</div>
+
+				<!-- Sidebar Links -->
+				<ul class="list-unstyled components">
+					<li class="active"><a href="#">Home</a></li>
+					<li><a href="#">Wedding</a></li>
+					<li><a href="#">Card</a></li>
+					<li><a href="#">Admin</a></li>
+					<li><a href="#">Sign Out</a></li>
+				</ul>
+			</nav>
+		</div>
+
+		<div id="content">
+			<button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
+				<i class="glyphicon glyphicon-align-left"></i>
+				Menu
+			</button>
+			<div>
 	</body>
 </html>

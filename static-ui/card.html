@@ -42,87 +42,124 @@
 				type="image/x-icon">
 	</head>
 	<body>
-		<section>
-			<h1>Weddings Details</h1>
-			<h3>Wedding Name:</h3>
-			<h3>Wedding Party Admin:</h3>
-			<h3>Return By Date:</h3>
-			<h3>Wedding Date:</h3>
-			<h3>Store:</h3>
+		<h1 class="mb-3">Weddings Details</h1>
+		<h5 class="m-2">Wedding Name:</h5>
+		<h5 class="m-2">Wedding Party Admin:</h5>
+		<h5 class="m-2">Return By Date:</h5>
+		<h5 class="m-2">Wedding Date:</h5>
+		<h5 class="m-2">Store:</h5>
 
-			<h1>Your Details</h1>
-			<h3>Name:</h3>
-			<h3>Email:</h3>
-			<h3>Phone:</h3>
+		<div class="container-fluid mb-5">
+			<div class="row">
+				<div class="col-md-2"></div>
+				<div class="col-md-8 justify-content-center p-4" id="tuxCard">
+					<div class="row">
+						<div class="col-md-12 m-0 text-center">Zach Spangler | zaspangler@gmail.com | 505-555-5555</div>
+					</div>
+					<div class="row">
+						<div class="col-md-5 m-0 text-left">Mr Tux</div>
+						<div class="col-md-2 m-0"></div>
+						<div class="col-md-5 m-0 text-right">Card #: 3452632782389293</div>
+					</div>
+					<div class="row">
+						<div class="col-md-5 m-0 text-left">3107 Eubank Blvd NE</div>
+						<div class="col-md-2 m-0"></div>
+						<div class="col-md-5 m-0 text-right">Submitted: Ok</div>
+					</div>
+					<div class="row">
+						<div class="col-md-5 m-0 text-left">Albuquerque, NM 87111</div>
+						<div class="col-md-2 m-0"></div>
+						<div class="col-md-5 m-0 text-right">Reviewed: Ok</div>
+					</div>
+					<form class="form-horizontal">
+						<div class="row">
+							<!-- Chest -->
+							<div class="col-xs-3 m-2 form-group">
+								<label for="cardChest" class="col-form-label">Chest:</label>
+								<input type="number" class="form-control" id="cardChest" formControlName="cardChest"
+										 placeholder="Chest">
+							</div>
 
-			<h1>Card</h1>
-			<h3>Number:</h3>
-			<h3>Confirmed:</h3>
-			<h3>Submitted:</h3>
+							<!-- Neck -->
+							<div class="col-xs-3 m-2 form-group">
+								<label for="cardCoat" class="col-form-label">Coat:</label>
+								<input type="number" class="form-control" id="cardCoat" formControlName="cardCoat"
+										 placeholder="Coat">
+							</div>
 
-			<input type="button" value="Print Card" onClick="window.print()">
+							<!-- Height -->
+							<div class="col-xs-3 m-2 form-group">
+								<label for="cardHeight" class="col-form-label">Height:</label>
+								<input type="number" class="form-control" id="cardHeight" formControlName="cardHeight"
+										 placeholder="Height">
+							</div>
 
-			<form class="form-horizontal">
-				<!-- Chest -->
-				<div class="form-group">
-					<label for="cardChest" class="col-form-label">Chest:</label>
-					<input type="number" class="form-control" id="cardChest" formControlName="cardChest">
+							<!-- Neck -->
+							<div class="col-xs-3 m-2 form-group">
+								<label for="cardNeck" class="col-form-label">Neck:</label>
+								<input type="number" class="form-control" id="cardNeck" formControlName="cardNeck"
+										 placeholder="Neck">
+							</div>
+						</div>
+						<div class="row">
+							<!-- Outseam -->
+							<div class="col-xs-3 m-2 form-group">
+								<label for="cardOutseam" class="col-form-label">Outseam:</label>
+								<input type="number" class="form-control" id="cardOutseam" formControlName="cardOutseam"
+										 placeholder="Outseam">
+							</div>
+
+							<!-- Pant -->
+							<div class="col-xs-3 m-2 form-group">
+								<label for="cardPant" class="col-form-label">Pant:</label>
+								<input type="number" class="form-control" id="cardPant" formControlName="cardPant"
+										 placeholder="Pant">
+							</div>
+
+							<!-- Shirt -->
+							<div class="col-xs-3 m-2 form-group">
+								<label for="cardShirt" class="col-form-label">Shirt:</label>
+								<input type="number" class="form-control" id="cardShirt" formControlName="cardShirt"
+										 placeholder="Shirt">
+							</div>
+
+							<!-- ShoeSize -->
+							<div class="col-xs-3 m-2 form-group">
+								<label for="cardShoeSize" class="col-form-label">Shoe Size:</label>
+								<input type="number" class="form-control" id="cardShoeSize" formControlName="cardShoeSize"
+										 placeholder="Shoe Size">
+							</div>
+						</div>
+						<div class="row">
+							<!-- Sleeve -->
+							<div class="col-xs-3 m-2 form-group">
+								<label for="cardSleeve" class="col-form-label">Sleeve:</label>
+								<input type="number" class="form-control" id="cardSleeve" formControlName="cardSleeve"
+										 placeholder="Sleeve">
+							</div>
+
+							<!-- Weight -->
+							<div class="col-xs-3 m-2 form-group">
+								<label for="cardWeight" class="col-form-label">Weight:</label>
+								<input type="number" class="form-control" id="cardWeight" formControlName="cardWeight"
+										 placeholder="Weight">
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-4">
+								<button>Submit</button>
+							</div>
+							<div class="col-xs-4">
+								<button>Edit</button>
+							</div>
+							<div class="col-xs-4">
+								<button>Print</button>
+							</div>
+						</div>
+					</form>
 				</div>
-
-				<!-- Neck -->
-				<div class="form-group">
-					<label for="cardCoat" class="col-form-label">Coat:</label>
-					<input type="number" class="form-control" id="cardCoat" formControlName="cardCoat">
-				</div>
-
-				<!-- Height -->
-				<div class="form-group">
-					<label for="cardHeight" class="col-form-label">Height:</label>
-					<input type="number" class="form-control" id="cardHeight" formControlName="cardHeight">
-				</div>
-
-				<!-- Neck -->
-				<div class="form-group">
-					<label for="cardNeck" class="col-form-label">Neck:</label>
-					<input type="number" class="form-control" id="cardNeck" formControlName="cardNeck">
-				</div>
-
-				<!-- Outseam -->
-				<div class="form-group">
-					<label for="cardOutseam" class="col-form-label">Outseam:</label>
-					<input type="number" class="form-control" id="cardOutseam" formControlName="cardOutseam">
-				</div>
-
-				<!-- Pant -->
-				<div class="form-group">
-					<label for="cardPant" class="col-form-label">Pant:</label>
-					<input type="number" class="form-control" id="cardPant" formControlName="cardPant">
-				</div>
-
-				<!-- Shirt -->
-				<div class="form-group">
-					<label for="cardShirt" class="col-form-label">Shirt:</label>
-					<input type="number" class="form-control" id="cardShirt" formControlName="cardShirt">
-				</div>
-
-				<!-- ShoeSize -->
-				<div class="form-group">
-					<label for="cardShoeSize" class="col-form-label">ShoeSize:</label>
-					<input type="number" class="form-control" id="cardShoeSize" formControlName="cardShoeSize">
-				</div>
-
-				<!-- Sleeve -->
-				<div class="form-group">
-					<label for="cardSleeve" class="col-form-label">Sleeve:</label>
-					<input type="number" class="form-control" id="cardSleeve" formControlName="cardSleeve">
-				</div>
-
-				<!-- Weight -->
-				<div class="form-group">
-					<label for="cardWeight" class="col-form-label">Weight:</label>
-					<input type="number" class="form-control" id="cardWeight" formControlName="cardWeight">
-				</div>
-			</form>
-		</section>
+				<div class="col-md-2"></div>
+			</div>
+		</div>
 	</body>
 </html>
