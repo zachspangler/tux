@@ -4,7 +4,7 @@ require_once dirname(__DIR__, 3) . "/php/classes/autoload.php";
 require_once dirname(__DIR__, 3) . "/php/lib/xsrf.php";
 require_once dirname(__DIR__, 3) . "/php/lib/uuid.php";
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
-use Edu\Cnm\Tux\Profile;
+use Zachspangler\Tux\Profile;
 /**
  * api for signing up for Tux
  *
@@ -52,6 +52,7 @@ try {
 		if($requestObject->profilePassword !== $requestObject->profilePasswordConfirm) {
 			throw(new \InvalidArgumentException("passwords do not match"));
 		}
+
 		$profilePhone = "";
 		$profileSalt = bin2hex(random_bytes(32));
 		$profileHash = hash_pbkdf2("sha512", $requestObject->profilePassword, $profileSalt, 262144);

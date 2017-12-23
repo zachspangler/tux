@@ -25,7 +25,11 @@ body {
 	background-size: cover;
 	background-position: center;
 	height: 40em;
-	opacity: .5;
+}
+
+.lead {
+	color: black;
+	font-weight: bold;
 }
 
 
@@ -36,7 +40,6 @@ body {
 	height: 25em;
 	text-align: center;
 }
-
 
 #your-job {
 	background-color: #E9E9E9;
