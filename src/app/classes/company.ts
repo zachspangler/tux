@@ -8,6 +8,6 @@ export class Company {
 	public companyPhone: string,
 	public companyPostalCode: string,
 	public companyState: string,
-	public companyNotifications
+	public companyNotifications: string
 	) {}
 }

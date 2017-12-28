@@ -1,8 +1,17 @@
 import {Component} from "@angular/core";
+import {SessionService} from "./services/session.service";
+import {Status} from "./classes/status";
 
 @Component({
-	selector: "angular5-example-app",
-	templateUrl: "./templates/angular5-example-app.html"
+	selector: "tux-app",
+	templateUrl: "./templates/tux-app.html"
 })
 
-export class AppComponent {}
+export class AppComponent {
+	status : Status = null;
+
+	constructor(protected sessionService : SessionService) {
+		this.sessionService.setSession()
+			.subscribe(status => this.status = status);
+	}
+}

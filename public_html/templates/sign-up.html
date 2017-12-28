@@ -47,13 +47,12 @@
 
 					<!-- Phone -->
 					<div class="form-group">
-						<label for="profileBio" class="col-form-label">Bio:</label>
-						<textarea type="text" class="form-control" id="profileBio" formControlName="profileBio"></textarea>
+						<label for="profilePhone" class="col-form-label">Phone:</label>
+						<input type="tel" class="form-control" id="profilePhone" formControlName="profilePhone">
 					</div>
 					<!-- Angular Validation -->
-					<div class="alert alert-danger" *ngIf="signUpForm.controls.profileBio?.invalid && signUpForm.controls.profileBio?.touched">
-						<p *ngIf="signUpForm.controls.profileBio?.errors.maxlength">Bio is too long</p>
-						<p *ngIf="signUpForm.controls.profileBio?.errors.required">Bio required</p>
+					<div class="alert alert-danger" *ngIf="signUpForm.controls.profilePhone?.invalid && signUpForm.controls.profilePhone?.touched">
+						<p *ngIf="signUpForm.controls.profilePhone?.errors.maxlength">Phone number is too long</p>
 					</div>
 
 					<!-- Password -->
