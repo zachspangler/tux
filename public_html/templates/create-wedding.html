@@ -1,5 +1,6 @@
 <!-- Modal -->
-<div class="modal" id="createWedding" tabindex="-1" role="dialog" aria-labelledby="createWeddingLabel" aria-hidden="true">
+<div class="modal" id="createWedding" tabindex="-1" role="dialog" aria-labelledby="createWeddingLabel"
+	  aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content bg-light">
 			<div class="modal-header">
@@ -11,53 +12,58 @@
 			<div class="modal-body">
 				<form class="form-horizontal" name="createWeddingForm" id="createWeddingForm" [formGroup]="createWeddingForm" novalidate (ngSubmit)="createWedding();">
 					<!-- Company -->
-					<div class="form-row">
-						<div class="form-group col-md-6">
+						<div class="form-group">
 							<label for="companyName" class="col-form-label">Company:</label>
 							<input type="text" class="form-control" id="companyName" formControlName="companyName">
 						</div>
 						<!-- Angular Validation -->
-						<div class="alert alert-danger" *ngIf="signUpForm.controls.companyName?.invalid && signUpForm.controls.companyName?.touched">
+						<div class="alert alert-danger"
+							  *ngIf="signUpForm.controls.companyName?.invalid && signUpForm.controls.companyName?.touched">
 							<p *ngIf="signUpForm.controls.companyName?.errors.maxlength">Company is too long</p>
 							<p *ngIf="signUpForm.controls.companyName?.errors.required">Company is required</p>
 						</div>
 
-						<!-- Wedding Name -->
-						<div class="form-group col-md-6">
+					<!-- Wedding Name -->
+						<div class="form-group">
 							<label for="weddingName" class="col-form-label">Wedding Name:</label>
 							<input type="text" class="form-control" id="weddingName" formControlName="weddingName">
 						</div>
-					</div>
-					<!-- Angular Validation -->
-					<div class="alert alert-danger" *ngIf="signUpForm.controls.weddingName?.invalid && signUpForm.controls.weddingName?.touched">
-						<p *ngIf="signUpForm.controls.weddingName?.errors.maxlength">Wedding Name is too long</p>
-						<p *ngIf="signUpForm.controls.weddingName?.errors.required">Wedding Date is required</p>
-					</div>
+						<!-- Angular Validation -->
+						<div class="alert alert-danger"
+							  *ngIf="signUpForm.controls.weddingName?.invalid && signUpForm.controls.weddingName?.touched">
+							<p *ngIf="signUpForm.controls.weddingName?.errors.maxlength">Wedding Name is too long</p>
+							<p *ngIf="signUpForm.controls.weddingName?.errors.required">Wedding Date is required</p>
+						</div>
 
-						<!-- Wedding Date -->
+					<!-- Wedding Date -->
+					<div class="form-row">
 						<div class="form-group col-md-6">
 							<label for="weddingDate" class="col-form-label">Wedding Date:</label>
 							<input type="date" class="form-control" id="weddingDate" formControlName="weddingDate">
 						</div>
-					<!-- Angular Validation -->
-					<div class="alert alert-danger" *ngIf="signUpForm.controls.weddingDate?.invalid && signUpForm.controls.weddingDate?.touched">
-						<p *ngIf="signUpForm.controls.weddingDate?.errors.maxlength">Wedding Date is too long</p>
-						<p *ngIf="signUpForm.controls.weddingDate?.errors.required">Wedding Date is required</p>
-					</div>
+						<!-- Angular Validation -->
+						<div class="alert alert-danger"
+							  *ngIf="signUpForm.controls.weddingDate?.invalid && signUpForm.controls.weddingDate?.touched">
+							<p *ngIf="signUpForm.controls.weddingDate?.errors.maxlength">Wedding Date is too long</p>
+							<p *ngIf="signUpForm.controls.weddingDate?.errors.required">Wedding Date is required</p>
+						</div>
 
-					<!-- Email -->
-					<div class="form-group">
-						<label for="weddingReturnByDate" class="col-form-label">Return By Date:</label>
-						<input type="date" class="form-control" id="weddingReturnByDate" formControlName="weddingReturnByDate">
-					</div>
-					<!-- Angular Validation -->
-					<div class="alert alert-danger" *ngIf="signUpForm.controls.weddingReturnByDate?.invalid && signUpForm.controls.weddingReturnByDate?.touched">
-						<p *ngIf="signUpForm.controls.weddingReturnByDate?.errors.maxlength">Return By Date is too long</p>
-						<p *ngIf="signUpForm.controls.weddingReturnByDate?.errors.required">Return By Date is required</p>
+						<!--Return By Date -->
+						<div class="form-group col-md-6">
+							<label for="weddingReturnByDate" class="col-form-label">Return By Date:</label>
+							<input type="date" class="form-control" id="weddingReturnByDate"
+									 formControlName="weddingReturnByDate">
+						</div>
+						<!-- Angular Validation -->
+						<div class="alert alert-danger"
+							  *ngIf="signUpForm.controls.weddingReturnByDate?.invalid && signUpForm.controls.weddingReturnByDate?.touched">
+							<p *ngIf="signUpForm.controls.weddingReturnByDate?.errors.maxlength">Return By Date is too long</p>
+							<p *ngIf="signUpForm.controls.weddingReturnByDate?.errors.required">Return By Date is required</p>
+						</div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-						<button type="submit" id="signUp" name="signUp" class="btn btn-warning">Sign Up</button>
+						<button type="submit" id="signUp" name="signUp" class="btn btn-warning">Create Wedding</button>
 					</div>
 				</form>
 			</div>

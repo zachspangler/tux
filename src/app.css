@@ -17,6 +17,24 @@ body {
 	width: auto;
 }
 
+.create-button {
+	text-decoration: none;
+	color: dodgerblue;
+	padding: .7em;
+	background-color: transparent;
+	border: 2px solid dodgerblue;
+	border-radius: 10px;
+}
+
+a.create-button:hover {
+	text-decoration: none;
+	color: white;
+	padding: .7em;
+	background-color: dodgerblue;
+	border: 2px solid white;
+	border-radius: 10px;
+}
+
 .even {
 	background-color: lightgray;
 }

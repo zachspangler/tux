@@ -44,7 +44,7 @@ export class CreateWeddingComponent implements OnInit {
 				if(this.status.status === 200) {
 					alert(status.message);
 					setTimeout(function() {$("#createWedding").modal('hide');}, 500);
-					this.router.navigate([""]);
+					this.router.navigate(["wedding/:id"]);
 				}
 			});
 	}

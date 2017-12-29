@@ -17,6 +17,8 @@ import {SignUpComponent} from "./components/sign.up.component";
 import {SignOutComponent} from "./components/sign.out.component";
 import {NavigationTopComponent} from "./components/navigation-top.component";
 import {CreateWeddingComponent} from "./components/create.wedding.component";
+import {NavigationSideComponent} from "./components/sidebar-nav.component";
+import {WeddingDetailComponent} from "./components/wedding.details.component";
 
 // import services
 import {AuthService} from "./services/auth.service";
@@ -31,6 +33,8 @@ import {SignOutService} from "./services/sign.out.service";
 
 
 
+
+
 //an array of the components that will be passed off to the module
 export const allAppComponents = [
 	SplashComponent,
@@ -42,6 +46,8 @@ export const allAppComponents = [
 	SignInComponent,
 	SignUpComponent,
 	SignOutComponent,
+	NavigationSideComponent,
+	WeddingDetailComponent
 ];
 
 //an array of routes that will be passed of to the module
@@ -50,6 +56,7 @@ export const routes: Routes = [
 	{path: "home", component: HomeComponent},
 	{path: "company", component: CompanyComponent},
 	{path: "sign-out", component: SignOutComponent},
+	{path: "wedding", component: WeddingDetailComponent},
 ];
 
 // an array of services that will be passed off to the module
