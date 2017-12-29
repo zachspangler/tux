@@ -18,7 +18,7 @@ body {
 }
 
 .even {
-	background-color: #FFFFFF;
+	background-color: lightgray;
 }
 
 /**************
@@ -41,17 +41,21 @@ body {
 }
 
 .num-01 {
-
+	writing-mode: vertical-rl;
+	text-orientation: upright;
 }
 
 .num-02 {
-
+	writing-mode: vertical-lr;
+	text-orientation: sideways;
 }
 
 .num-03 {
-
+	writing-mode: vertical-lr;
+	text-orientation: upright;
 }
 
 .num-04 {
-
+	writing-mode: vertical-rl;
+	text-orientation: mixed;
 }
