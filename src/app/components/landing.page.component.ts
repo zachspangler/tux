@@ -7,5 +7,4 @@ import {Company} from "../classes/company";
 })
 
 export class LandingPageComponent {
-
 }

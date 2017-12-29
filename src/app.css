@@ -1,0 +1,57 @@
+/**************
+*GLOBAL
+****************/
+
+body {
+	font-family: 'Lato Light',Helvetica,sans-serif;
+}
+
+.call-to-action {
+	text-decoration: none;
+	color: #DC5D54;
+}
+
+.image-landing {
+	background-size: contain;
+	height: 25em;
+	width: auto;
+}
+
+.even {
+	background-color: #FFFFFF;
+}
+
+/**************
+*LANDING PAGE
+****************/
+
+/* JUMBOTRON */
+#landing-page-jumbo {
+	background-image: url("https://dl.dropboxusercontent.com/s/g2zstjehmkpveea/IMG_2314.JPG.jpeg");
+	background-size: cover;
+	background-position: center;
+	height: 35em;
+}
+
+/* JOBS */
+.numbers {
+	font-weight: bold;
+	color: black;
+	font-size: 3em;
+}
+
+.num-01 {
+
+}
+
+.num-02 {
+
+}
+
+.num-03 {
+
+}
+
+.num-04 {
+
+}

@@ -16,6 +16,7 @@ import {SignInComponent} from "./components/sign.in.component";
 import {SignUpComponent} from "./components/sign.up.component";
 import {SignOutComponent} from "./components/sign.out.component";
 import {NavigationTopComponent} from "./components/navigation-top.component";
+import {CreateWeddingComponent} from "./components/create.wedding.component";
 
 // import services
 import {AuthService} from "./services/auth.service";
@@ -23,9 +24,11 @@ import {AuthGuardService} from "./services/auth.guard.service";
 import {CookieService} from "ng2-cookies";
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {SessionService} from "./services/session.service";
+import {WeddingService} from "./services/wedding.service";
 import {SignInService} from "./services/sign.in.service";
 import {SignUpService} from "./services/sign.up.service";
 import {SignOutService} from "./services/sign.out.service";
+
 
 
 //an array of the components that will be passed off to the module
@@ -34,6 +37,7 @@ export const allAppComponents = [
 	LandingPageComponent,
 	HomeComponent,
 	NavigationTopComponent,
+	CreateWeddingComponent,
 	CompanyComponent,
 	SignInComponent,
 	SignUpComponent,
@@ -49,7 +53,7 @@ export const routes: Routes = [
 ];
 
 // an array of services that will be passed off to the module
-const services : any[] = [AuthService,CookieService,JwtHelperService,SessionService,SignInService,SignUpService, SignOutService, AuthGuardService];
+const services : any[] = [AuthService, CookieService, JwtHelperService, SessionService, WeddingService, SignInService, SignUpService, SignOutService, AuthGuardService];
 
 // an array of misc providers
 export const providers: any[] = [

@@ -25,7 +25,7 @@
 						<!-- Wedding Name -->
 						<div class="form-group col-md-6">
 							<label for="weddingName" class="col-form-label">Wedding Name:</label>
-							<input type="date" class="form-control" id="weddingName" formControlName="weddingName">
+							<input type="text" class="form-control" id="weddingName" formControlName="weddingName">
 						</div>
 					</div>
 					<!-- Angular Validation -->
@@ -39,7 +39,6 @@
 							<label for="weddingDate" class="col-form-label">Wedding Date:</label>
 							<input type="date" class="form-control" id="weddingDate" formControlName="weddingDate">
 						</div>
-					</div>
 					<!-- Angular Validation -->
 					<div class="alert alert-danger" *ngIf="signUpForm.controls.weddingDate?.invalid && signUpForm.controls.weddingDate?.touched">
 						<p *ngIf="signUpForm.controls.weddingDate?.errors.maxlength">Wedding Date is too long</p>
