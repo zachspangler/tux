@@ -33,11 +33,13 @@ body {
 	height: 35em;
 }
 
+/* FEATURES */
+
 /* JOBS */
 .numbers {
 	font-weight: bold;
 	color: black;
-	font-size: 3em;
+	font-size: 2em;
 }
 
 .num-01 {
