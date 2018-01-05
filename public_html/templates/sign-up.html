@@ -13,7 +13,7 @@
 					<!-- First Name -->
 					<div class="form-row">
 						<div class="form-group col-md-6">
-							<label for="profileFirstName" class="col-form-label">First Name:</label>
+							<label for="profileFirstName" class="col-form-label"><span style="color:red;">*</span>First Name:</label>
 							<input type="text" class="form-control" id="profileFirstName" formControlName="profileFirstName">
 						</div>
 						<!-- Angular Validation -->
@@ -24,7 +24,7 @@
 
 						<!-- Last Name -->
 						<div class="form-group col-md-6">
-							<label for="profileLastName" class="col-form-label">Last Name:</label>
+							<label for="profileLastName" class="col-form-label"><span style="color:red;">*</span>Last Name:</label>
 							<input type="text" class="form-control" id="profileLastName" formControlName="profileLastName">
 						</div>
 					</div>
@@ -36,7 +36,7 @@
 
 					<!-- Email -->
 					<div class="form-group">
-						<label for="profileEmail" class="col-form-label">Email:</label>
+						<label for="profileEmail" class="col-form-label"><span style="color:red;">*</span>Email:</label>
 						<input type="email" class="form-control" id="profileEmail" formControlName="profileEmail">
 					</div>
 					<!-- Angular Validation -->
@@ -57,7 +57,7 @@
 
 					<!-- Password -->
 					<div class="form-group">
-						<label for="profilePassword" class="col-form-label">Password:</label>
+						<label for="profilePassword" class="col-form-label"><span style="color:red;">*</span>Password:</label>
 						<input type="password" class="form-control" id="profilePassword" formControlName="profilePassword" >
 					</div>
 					<!-- Angular Validation -->
@@ -68,7 +68,7 @@
 
 					<!-- Confirm Password -->
 					<div class="form-group">
-						<label for="profilePasswordConfirm" class="col-form-label">Confirm Password:</label>
+						<label for="profilePasswordConfirm" class="col-form-label"><span style="color:red;">*</span>Confirm Password:</label>
 						<input type="password" class="form-control" id="profilePasswordConfirm" formControlName="profilePasswordConfirm">
 					</div>
 					<!-- Angular Validation -->
@@ -76,6 +76,12 @@
 						<p *ngIf="signUpForm.controls.profilePasswordConfirm?.errors.maxlength">Password is too long</p>
 						<p *ngIf="signUpForm.controls.profilePasswordConfirm?.errors.required">Password required</p>
 					</div>
+
+					<!-- Indicates Required Field -->
+					<div class="form-group">
+						<span class="text-muted"><em><span style="color:red;">*</span> Indicates required field</em></span>
+					</div>
+
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 						<button type="submit" id="signUp" name="signUp" class="btn btn-warning">Sign Up</button>
