@@ -1,0 +1,98 @@
+<!-- Modal -->
+<div class="modal fade" id="addGroomsman" tabindex="-1" role="dialog" aria-labelledby="addGroomsmanLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content bg-light">
+			<div class="modal-header">
+				<h5 class="modal-title" id="addGroomsmanLabel">Add Your Groomsman</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal" name="addGroomsmanForm" id="addGroomsmanForm" [formGroup]="addGroomsmanForm" novalidate (ngSubmit)="addGroomsman();">
+					<!-- First Name -->
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="profileFirstName" class="col-form-label"><span style="color:red;">*</span>First Name:</label>
+							<input type="text" class="form-control" id="profileFirstName" formControlName="profileFirstName">
+						</div>
+						<!-- Angular Validation -->
+						<div class="alert alert-danger" *ngIf="addGroomsmanForm.controls.profileFirstName?.invalid && addGroomsmanForm.controls.profileFirstName?.touched">
+							<p *ngIf="addGroomsmanForm.controls.profileFirstName?.errors.maxlength">First Name is too long</p>
+							<p *ngIf="addGroomsmanForm.controls.profileFirstName?.errors.required">First Name is required</p>
+						</div>
+
+						<!-- Last Name -->
+						<div class="form-group col-md-6">
+							<label for="profileLastName" class="col-form-label"><span style="color:red;">*</span>Last Name:</label>
+							<input type="text" class="form-control" id="profileLastName" formControlName="profileLastName">
+						</div>
+					</div>
+					<!-- Angular Validation -->
+					<div class="alert alert-danger" *ngIf="addGroomsmanForm.controls.profileLastName?.invalid && addGroomsmanForm.controls.profileLastName?.touched">
+						<p *ngIf="addGroomsmanForm.controls.profileLastName?.errors.maxlength">Last Name is too long</p>
+						<p *ngIf="addGroomsmanForm.controls.profileLastName?.errors.required">Last Name is required</p>
+					</div>
+
+					<!-- Email -->
+					<div class="form-group">
+						<label for="profileEmail" class="col-form-label"><span style="color:red;">*</span>Email:</label>
+						<input type="email" class="form-control" id="profileEmail" formControlName="profileEmail">
+					</div>
+					<!-- Angular Validation -->
+					<div class="alert alert-danger" *ngIf="addGroomsmanForm.controls.profileEmail?.invalid && addGroomsmanForm.controls.profileEmail?.touched">
+						<p *ngIf="addGroomsmanForm.controls.profileEmail?.errors.maxlength">Email is too long</p>
+						<p *ngIf="addGroomsmanForm.controls.profileEmail?.errors.required">Email is required</p>
+					</div>
+
+					<!-- Phone -->
+					<div class="form-group">
+						<label for="profilePhone" class="col-form-label">Phone:</label>
+						<input type="tel" class="form-control" id="profilePhone" formControlName="profilePhone">
+					</div>
+					<!-- Angular Validation -->
+					<div class="alert alert-danger" *ngIf="addGroomsmanForm.controls.profilePhone?.invalid && addGroomsmanForm.controls.profilePhone?.touched">
+						<p *ngIf="addGroomsmanForm.controls.profilePhone?.errors.maxlength">Phone number is too long</p>
+					</div>
+
+					<!-- Password -->
+					<div class="form-group">
+						<label for="profilePassword" class="col-form-label"><span style="color:red;">*</span>Password:</label>
+						<input type="password" class="form-control" id="profilePassword" formControlName="profilePassword" >
+					</div>
+					<!-- Angular Validation -->
+					<div class="alert alert-danger" *ngIf="addGroomsmanForm.controls.profilePassword?.invalid && addGroomsmanForm.controls.profilePassword?.touched">
+						<p *ngIf="addGroomsmanForm.controls.profilePassword?.errors.maxlength">Password is too long</p>
+						<p *ngIf="addGroomsmanForm.controls.profilePassword?.errors.required">Password required</p>
+					</div>
+
+					<!-- Confirm Password -->
+					<div class="form-group">
+						<label for="profilePasswordConfirm" class="col-form-label"><span style="color:red;">*</span>Confirm Password:</label>
+						<input type="password" class="form-control" id="profilePasswordConfirm" formControlName="profilePasswordConfirm">
+					</div>
+					<!-- Angular Validation -->
+					<div class="alert alert-danger" *ngIf="addGroomsmanForm.controls.profilePasswordConfirm?.invalid && addGroomsmanForm.controls.profilePasswordConfirm?.touched">
+						<p *ngIf="addGroomsmanForm.controls.profilePasswordConfirm?.errors.maxlength">Password is too long</p>
+						<p *ngIf="addGroomsmanForm.controls.profilePasswordConfirm?.errors.required">Password required</p>
+					</div>
+
+					<!-- Indicates Required Field -->
+					<div class="form-group">
+						<span class="text-muted"><em><span style="color:red;">*</span> Indicates required field</em></span>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button type="submit" id="signUp" name="signUp" class="btn btn-warning">Send Invite</button>
+					</div>
+				</form>
+			</div>
+			<div *ngIf="status !== null" class="alert alert-dismissible" [ngClass]="status.type" role="alert">
+				<button type="button" class="close" aria-label="Close" (click)="status = null;"><span
+					aria-hidden="true">&times;</span></button>
+				{{ status.message }}
+			</div>
+		</div>
+	</div>
+</div>

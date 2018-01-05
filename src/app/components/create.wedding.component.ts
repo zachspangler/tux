@@ -15,7 +15,6 @@ declare let $: any;
 })
 
 export class CreateWeddingComponent implements OnInit {
-
 	createWeddingForm: FormGroup;
 	status: Status = null;
 

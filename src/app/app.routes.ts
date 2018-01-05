@@ -19,6 +19,7 @@ import {NavigationTopComponent} from "./components/navigation-top.component";
 import {CreateWeddingComponent} from "./components/create.wedding.component";
 import {NavigationSideComponent} from "./components/sidebar-nav.component";
 import {WeddingDetailComponent} from "./components/wedding.details.component";
+import {AddGroomsmanComponent} from "./components/add.groomsman.component";
 
 // import services
 import {AuthService} from "./services/auth.service";
@@ -30,9 +31,6 @@ import {WeddingService} from "./services/wedding.service";
 import {SignInService} from "./services/sign.in.service";
 import {SignUpService} from "./services/sign.up.service";
 import {SignOutService} from "./services/sign.out.service";
-
-
-
 
 
 //an array of the components that will be passed off to the module
@@ -47,7 +45,8 @@ export const allAppComponents = [
 	SignUpComponent,
 	SignOutComponent,
 	NavigationSideComponent,
-	WeddingDetailComponent
+	WeddingDetailComponent,
+	AddGroomsmanComponent
 ];
 
 //an array of routes that will be passed of to the module

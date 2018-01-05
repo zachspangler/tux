@@ -30,7 +30,7 @@
 						<!-- Angular Validation -->
 						<div class="alert alert-danger" *ngIf="createWeddingForm.controls.weddingName?.invalid && createWeddingForm.controls.weddingName?.touched">
 							<p *ngIf="createWeddingForm.controls.weddingName?.errors.maxlength">Wedding Name is too long</p>
-							<p *ngIf="createWeddingForm.controls.weddingName?.errors.required">Wedding Date is required</p>
+							<p *ngIf="createWeddingForm.controls.weddingName?.errors.required">Wedding Name is required</p>
 						</div>
 
 					<!-- Wedding Date -->
@@ -52,8 +52,7 @@
 									 formControlName="weddingReturnByDate">
 						</div>
 						<!-- Angular Validation -->
-						<div class="alert alert-danger"
-							  *ngIf="createWeddingForm.controls.weddingReturnByDate?.invalid && createWeddingForm.controls.weddingReturnByDate?.touched">
+						<div class="alert alert-danger" *ngIf="createWeddingForm.controls.weddingReturnByDate?.invalid && createWeddingForm.controls.weddingReturnByDate?.touched">
 							<p *ngIf="createWeddingForm.controls.weddingReturnByDate?.errors.maxlength">Return By Date is too long</p>
 							<p *ngIf="createWeddingForm.controls.weddingReturnByDate?.errors.required">Return By Date is required</p>
 						</div>

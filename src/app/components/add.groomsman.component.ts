@@ -1,11 +1,8 @@
-/*
- this component is for signing up to use the site.
- */
-
 import {Component, OnInit} from "@angular/core";
 import {Router} from "@angular/router";
 import {Status} from "../classes/status";
 import {SignUpService} from "../services/sign.up.service";
+import {WeddingService} from "../services/wedding.service";
 import {SignUp} from "../classes/sign.up";
 import {setTimeout} from "timers";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -14,34 +11,32 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 declare let $: any;
 
 @Component({
-	selector: "sign-up",
-	templateUrl: "./templates/sign-up.html"
+	selector: "add-groomsman",
+	templateUrl: "./templates/add-groomsman.html"
 })
 
-export class SignUpComponent implements OnInit {
-
-	signUpForm: FormGroup;
+export class AddGroomsmanComponent implements OnInit {
+	addGroomsmanForm: FormGroup;
 	status: Status = null;
 
 	constructor(private formBuilder: FormBuilder, private router: Router, private signUpService: SignUpService) {
-		console.log("Profile Constructed")
+		console.log("Groomsman Added")
 	}
 
 	ngOnInit(): void {
-		this.signUpForm = this.formBuilder.group({
+		this.addGroomsmanForm = this.formBuilder.group({
 			profileEmail: ["", [Validators.maxLength(128), Validators.required]],
 			profileFirstName: ["", [Validators.maxLength(32), Validators.required]],
 			profileLastName: ["", [Validators.maxLength(32), Validators.required]],
 			profilePhone: ["", [Validators.maxLength(32)]],
 			profilePassword: ["", [Validators.maxLength(48), Validators.required]],
-			profilePasswordConfirm: ["", [Validators.maxLength(48), Validators.required]]
+			profilePasswordConfirm: ["", [Validators.maxLength(48), Validators.required]],
 		});
 	}
 
+	addGroomsman(): void {
 
-	createSignUp(): void {
-
-		let signUp = new SignUp(this.signUpForm.value.profileEmail, this.signUpForm.value.profileFirstName, this.signUpForm.value.profileLastName, this.signUpForm.value.profilePhone, this.signUpForm.value.profilePassword, this.signUpForm.value.profilePasswordConfirm);
+		let signUp = new SignUp(this.addGroomsmanForm.value.profileEmail, this.addGroomsmanForm.value.profileFirstName, this.addGroomsmanForm.value.profileLastName, this.addGroomsmanForm.value.profilePhone, this.addGroomsmanForm.value.profilePassword, this.addGroomsmanForm.value.profilePasswordConfirm);
 
 		this.signUpService.createProfile(signUp)
 			.subscribe(status => {
@@ -49,9 +44,15 @@ export class SignUpComponent implements OnInit {
 
 				if(this.status.status === 200) {
 					alert(status.message);
-					setTimeout(function() {$("#join").modal('hide');}, 500);
-					this.router.navigate(["/home/"]);
+					setTimeout(function() {$("#addGroomsman").modal('hide');}, 500);
 				}
 			});
+
+		this.reloadWeddingDetails();
+	}
+
+	reloadWeddingDetails() : void {
+		this.weddingService.getWeddingDetails()
+			.subscribe(wedding => this.wedding = wedding);
 	}
 }
