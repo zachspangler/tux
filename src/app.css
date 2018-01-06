@@ -79,3 +79,12 @@ a.create-button:hover {
 	writing-mode: vertical-rl;
 	text-orientation: mixed;
 }
+
+/**************
+*CARD
+****************/
+#tuxCard {
+	border: 1px solid black;
+	background-color: #A5A18E;
+	border-radius: 50px;
+}

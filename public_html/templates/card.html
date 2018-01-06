@@ -1,0 +1,195 @@
+<navigation-top></navigation-top>
+
+<section class="m-3">
+	<h1 class="mb-3">Weddings Details</h1>
+	<h6 class="m-2">Wedding Name:</h6>
+	<h6 class="m-2">Wedding Party Admin:</h6>
+	<h6 class="m-2">Return By Date:</h6>
+	<h6 class="m-2">Wedding Date:</h6>
+	<h6 class="m-2">Store:</h6>
+
+	<div class="container-fluid mb-5">
+		<div class="row">
+			<div class="col-md-2"></div>
+			<div class="col-md-8 justify-content-center p-4" id="tuxCard">
+				<div class="row">
+					<div class="col-md-12 m-0 text-center">Zach Spangler | zaspangler@gmail.com | 505-555-5555</div>
+				</div>
+				<div class="row">
+					<div class="col-md-5 m-0 text-left">Mr Tux</div>
+					<div class="col-md-2 m-0"></div>
+					<div class="col-md-5 m-0 text-right">Card #: 3452632782389293</div>
+				</div>
+				<div class="row">
+					<div class="col-md-5 m-0 text-left">3107 Eubank Blvd NE</div>
+					<div class="col-md-2 m-0"></div>
+					<div class="col-md-5 m-0 text-right">Submitted: Ok</div>
+				</div>
+				<div class="row">
+					<div class="col-md-5 m-0 text-left">Albuquerque, NM 87111</div>
+					<div class="col-md-2 m-0"></div>
+					<div class="col-md-5 m-0 text-right">Reviewed: Ok</div>
+				</div>
+				<form class="form-horizontal" name="cardForm" id="cardForm" [formGroup]="cardForm" novalidate (ngSubmit)="createWedding();">
+					<div class="row">
+						<!-- Chest -->
+						<div class="col-xs-3 m-2 form-group">
+							<label for="cardChest" class="col-form-label">Chest:</label>
+							<input type="number" class="form-control" id="cardChest" formControlName="cardChest"
+									 placeholder="Chest">
+						</div>
+
+						<!-- Angular Validation -->
+						<div class="alert alert-danger" *ngIf="cardForm.controls.cardChest?.invalid && cardForm.controls.cardChest?.touched">
+							<p *ngIf="cardForm.controls.cardChest?.errors.maxlength">Chest is too long</p>
+							<p *ngIf="cardForm.controls.cardChest?.errors.required">Chest is required</p>
+						</div>
+
+						<!-- Coat -->
+						<div class="col-xs-3 m-2 form-group">
+							<label for="cardCoat" class="col-form-label">Coat:</label>
+							<input type="number" class="form-control" id="cardCoat" formControlName="cardCoat"
+									 placeholder="Coat">
+						</div>
+
+						<!-- Angular Validation -->
+						<div class="alert alert-danger" *ngIf="cardForm.controls.cardCoat?.invalid && cardForm.controls.cardCoat?.touched">
+							<p *ngIf="cardForm.controls.cardCoat?.errors.maxlength">Coat is too long</p>
+							<p *ngIf="cardForm.controls.cardCoat?.errors.required">Coat is required</p>
+						</div>
+
+						<!-- Height -->
+						<div class="col-xs-3 m-2 form-group">
+							<label for="cardHeight" class="col-form-label">Height:</label>
+							<input type="number" class="form-control" id="cardHeight" formControlName="cardHeight"
+									 placeholder="Height">
+						</div>
+
+						<!-- Angular Validation -->
+						<div class="alert alert-danger" *ngIf="cardForm.controls.cardHeight?.invalid && cardForm.controls.cardHeight?.touched">
+							<p *ngIf="cardForm.controls.cardHeight?.errors.maxlength">Height is too long</p>
+							<p *ngIf="cardForm.controls.cardHeight?.errors.required">Height is required</p>
+						</div>
+
+						<!-- Neck -->
+						<div class="col-xs-3 m-2 form-group">
+							<label for="cardNeck" class="col-form-label">Neck:</label>
+							<input type="number" class="form-control" id="cardNeck" formControlName="cardNeck"
+									 placeholder="Neck">
+						</div>
+						<!-- Angular Validation -->
+						<div class="alert alert-danger" *ngIf="cardForm.controls.cardNeck?.invalid && cardForm.controls.cardNeck?.touched">
+							<p *ngIf="cardForm.controls.cardNeck?.errors.maxlength">Neck is too long</p>
+							<p *ngIf="cardForm.controls.cardNeck?.errors.required">Neck is required</p>
+						</div>
+					</div>
+					<div class="row">
+						<!-- Outseam -->
+						<div class="col-xs-3 m-2 form-group">
+							<label for="cardOutseam" class="col-form-label">Outseam:</label>
+							<input type="number" class="form-control" id="cardOutseam" formControlName="cardOutseam"
+									 placeholder="Outseam">
+						</div>
+						<!-- Angular Validation -->
+						<div class="alert alert-danger" *ngIf="cardForm.controls.cardOutseam?.invalid && cardForm.controls.cardOutseam?.touched">
+							<p *ngIf="cardForm.controls.cardOutseam?.errors.maxlength">Outseam is too long</p>
+							<p *ngIf="cardForm.controls.cardOutseam?.errors.required">Outseam is required</p>
+						</div>
+
+						<!-- Pant -->
+						<div class="col-xs-3 m-2 form-group">
+							<label for="cardPant" class="col-form-label">Pant:</label>
+							<input type="number" class="form-control" id="cardPant" formControlName="cardPant"
+									 placeholder="Pant">
+						</div>
+						<!-- Angular Validation -->
+						<div class="alert alert-danger" *ngIf="cardForm.controls.cardPant?.invalid && cardForm.controls.cardPant?.touched">
+							<p *ngIf="cardForm.controls.cardPant?.errors.maxlength">Pant is too long</p>
+							<p *ngIf="cardForm.controls.cardPant?.errors.required">Pant is required</p>
+						</div>
+
+						<!-- Shirt -->
+						<div class="col-xs-3 m-2 form-group">
+							<label for="cardShirt" class="col-form-label">Shirt:</label>
+							<input type="number" class="form-control" id="cardShirt" formControlName="cardShirt"
+									 placeholder="Shirt">
+						</div>
+						<!-- Angular Validation -->
+						<div class="alert alert-danger" *ngIf="cardForm.controls.cardShirt?.invalid && cardForm.controls.cardShirt?.touched">
+							<p *ngIf="cardForm.controls.cardShirt?.errors.maxlength">Shirt is too long</p>
+							<p *ngIf="cardForm.controls.cardShirt?.errors.required">Shirt is required</p>
+						</div>
+
+						<!-- ShoeSize -->
+						<div class="col-xs-3 m-2 form-group">
+							<label for="cardShoeSize" class="col-form-label">Shoe Size:</label>
+							<input type="number" class="form-control" id="cardShoeSize" formControlName="cardShoeSize"
+									 placeholder="Shoe Size">
+						</div>
+						<!-- Angular Validation -->
+						<div class="alert alert-danger" *ngIf="cardForm.controls.cardShoeSize?.invalid && cardForm.controls.cardShoeSize?.touched">
+							<p *ngIf="cardForm.controls.cardShoeSize?.errors.maxlength">Shoe Size is too long</p>
+							<p *ngIf="cardForm.controls.cardShoeSize?.errors.required">Shoe Size is required</p>
+						</div>
+						
+					</div>
+					<div class="row">
+						<!-- Sleeve -->
+						<div class="col-xs-3 m-2 form-group">
+							<label for="cardSleeve" class="col-form-label">Sleeve:</label>
+							<input type="number" class="form-control" id="cardSleeve" formControlName="cardSleeve"
+									 placeholder="Sleeve">
+						</div>
+
+						<!-- Angular Validation -->
+						<div class="alert alert-danger" *ngIf="cardForm.controls.cardSleeve?.invalid && cardForm.controls.cardSleeve?.touched">
+							<p *ngIf="cardForm.controls.cardSleeve?.errors.maxlength">Sleeve is too long</p>
+							<p *ngIf="cardForm.controls.cardSleeve?.errors.required">Sleeve is required</p>
+						</div>
+
+						<!-- Underarm -->
+						<div class="col-xs-3 m-2 form-group">
+							<label for="cardUnderarm" class="col-form-label">Underarm:</label>
+							<input type="number" class="form-control" id="cardUnderarm" formControlName="cardUnderarm"
+									 placeholder="Sleeve">
+						</div>
+
+						<!-- Angular Validation -->
+						<div class="alert alert-danger" *ngIf="cardForm.controls.cardUnderarm?.invalid && cardForm.controls.cardUnderarm?.touched">
+							<p *ngIf="cardForm.controls.cardUnderarm?.errors.maxlength">Underarm is too long</p>
+							<p *ngIf="cardForm.controls.cardUnderarm?.errors.required">Underarm is required</p>
+						</div>
+
+						<!-- Weight -->
+						<div class="col-xs-3 m-2 form-group">
+							<label for="cardWeight" class="col-form-label">Weight:</label>
+							<input type="number" class="form-control" id="cardWeight" formControlName="cardWeight"
+									 placeholder="Weight">
+						</div>
+
+						<!-- Angular Validation -->
+						<div class="alert alert-danger" *ngIf="cardForm.controls.cardWeight?.invalid && cardForm.controls.cardWeight?.touched">
+							<p *ngIf="cardForm.controls.cardWeight?.errors.maxlength">Weight is too long</p>
+							<p *ngIf="cardForm.controls.cardWeight?.errors.required">Weight is required</p>
+						</div>
+						
+					</div>
+					<div class="row">
+						<div class="col-xs-3"></div>
+						<div class="col-xs-2">
+							<button>Submit</button>
+						</div>
+						<div class="col-xs-2">
+							<button>Reviewed</button>
+						</div>
+						<div class="col-xs-2">
+							<button>Print</button>
+						</div>
+						<div class="col-xs-3"></div>
+					</div>
+				</form>
+			</div>
+			<div class="col-md-2"></div>
+		</div>
+	</div>
+</section>
