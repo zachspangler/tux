@@ -1,20 +1,26 @@
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
+import {Status} from "../classes/status";
+import {Router} from "@angular/router";
+import {setTimeout} from "timers";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Card} from "../classes/card";
-
-
-@Component({
-	templateUrl: "./templates/card.html",
-	selector: "card"
-})
+import {CardService} from "../services/card.service";
 
 //declare $ for jquery
 declare let $: any;
+
+@Component({
+	selector: "card",
+	templateUrl: "./templates/card.html"
+})
+
+
 
 export class CardComponent implements OnInit {
 	cardForm: FormGroup;
 	status: Status = null;
 
-	constructor(private formBuilder: FormBuilder, private router: Router, private weddingService: WeddingService) {
+	constructor(private formBuilder: FormBuilder, private router: Router, private cardService: CardService) {
 		console.log("Card Constructed")
 	}
 
@@ -41,10 +47,9 @@ export class CardComponent implements OnInit {
 
 
 	createCard(): void {
-
 		let createCard = new Card (null, null, null, this.cardForm.value.cardChest, this.cardForm.value.cardCoat, this.cardForm.value.cardComplete, this.cardForm.value.cardHeight,this.cardForm.value.cardNeck, this.cardForm.value.cardOutseam, this.cardForm.value.cardPant, this.cardForm.value.cardReviewed, this.cardForm.value.cardShirt, this.cardForm.value.cardShoeSize, this.cardForm.value.cardSleeve, this.cardForm.value.cardUnderarm, this.cardForm.value.cardWeight);
 
-		this.cardService.submitCard(submitCard)
+		this.cardService.createCard(createCard)
 			.subscribe(status => {
 				this.status = status;
 				if(this.status.status === 200) {

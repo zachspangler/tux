@@ -1,4 +1,6 @@
 import {Component} from "@angular/core";
+import {Wedding} from "../classes/wedding";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -7,4 +9,5 @@ import {Component} from "@angular/core";
 })
 
 export class NavigationTopComponent {
+
 }

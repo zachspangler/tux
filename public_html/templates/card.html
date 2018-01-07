@@ -30,7 +30,7 @@
 					<div class="col-md-2 m-0"></div>
 					<div class="col-md-5 m-0 text-right">Reviewed: Ok</div>
 				</div>
-				<form class="form-horizontal" name="cardForm" id="cardForm" [formGroup]="cardForm" novalidate (ngSubmit)="createWedding();">
+				<form class="form-horizontal" name="cardForm" id="cardForm" [formGroup]="cardForm" novalidate (ngSubmit)="createCard();">
 					<div class="row">
 						<!-- Chest -->
 						<div class="col-xs-3 m-2 form-group">
@@ -177,7 +177,7 @@
 					<div class="row">
 						<div class="col-xs-3"></div>
 						<div class="col-xs-2">
-							<button>Submit</button>
+							<button type="submit" id="createCard" name="createCard" class="btn btn-warning">Submit</button>
 						</div>
 						<div class="col-xs-2">
 							<button>Reviewed</button>
@@ -188,6 +188,11 @@
 						<div class="col-xs-3"></div>
 					</div>
 				</form>
+				<div *ngIf="status !== null" class="alert alert-dismissible" [ngClass]="status.type" role="alert">
+					<button type="button" class="close" aria-label="Close" (click)="status = null;"><span
+						aria-hidden="true">&times;</span></button>
+					{{ status.message }}
+				</div>
 			</div>
 			<div class="col-md-2"></div>
 		</div>

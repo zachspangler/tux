@@ -2,7 +2,6 @@ import {Component, OnInit} from "@angular/core";
 import {Router} from "@angular/router";
 import {Status} from "../classes/status";
 import {SignUpService} from "../services/sign.up.service";
-import {WeddingService} from "../services/wedding.service";
 import {SignUp} from "../classes/sign.up";
 import {setTimeout} from "timers";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -47,12 +46,5 @@ export class AddGroomsmanComponent implements OnInit {
 					setTimeout(function() {$("#addGroomsman").modal('hide');}, 500);
 				}
 			});
-
-		this.reloadWeddingDetails();
-	}
-
-	reloadWeddingDetails() : void {
-		this.weddingService.getWeddingDetails()
-			.subscribe(wedding => this.wedding = wedding);
 	}
 }

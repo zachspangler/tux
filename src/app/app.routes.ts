@@ -63,7 +63,7 @@ export const routes: Routes = [
 	{path: "company", component: CompanyComponent},
 	{path: "sign-out", component: SignOutComponent},
 	{path: "wedding", component: WeddingDetailComponent},
-	{path: "card", component: CardComponent},
+	{path: "card", component: CardComponent}
 ];
 
 // an array of services that will be passed off to the module

@@ -674,7 +674,7 @@ class Card implements \JsonSerializable {
 	}
 
 	/**
-	 * updates this Profile from mySQL
+	 * updates this Card from mySQL
 	 *
 	 * @param \PDO $pdo PDO connection object
 	 * @throws \PDOException when mySQL related errors occur

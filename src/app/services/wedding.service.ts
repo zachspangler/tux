@@ -3,29 +3,47 @@ import {Status} from "../classes/status";
 import {Observable} from "rxjs/Observable";
 import {Wedding} from "../classes/wedding";
 import {HttpClient} from "@angular/common/http";
+import {Card} from "../classes/card";
 
 @Injectable()
 export class WeddingService {
 
 	constructor(protected http: HttpClient) {}
 
-	private createWeddingUrl = "api/wedding/";
+	private weddingUrl = "api/wedding/";
 
-
-
-	getAllWeddings() : Observable<Wedding[]> {
-		return(this.http.get<Wedding[]>(this.createWeddingUrl));
-	}
 
 	createWedding(wedding: Wedding) : Observable<Status> {
-		return(this.http.post<Status>(this.createWeddingUrl, wedding));
+		return(this.http.post<Status>(this.weddingUrl, wedding));
 	}
 
 	editWedding(wedding: Wedding) : Observable<Status> {
-		return(this.http.put<Status>(this.createWeddingUrl + wedding.weddingId, wedding));
+		return(this.http.put<Status>(this.weddingUrl + wedding.weddingId, wedding));
 	}
 
-	getWeddingDetails(weddingId: string) : Observable<Wedding> {
-		return(this.http.get<Wedding>(this.createWeddingUrl + weddingId));
+
+	//all getBys
+	getWeddingByWeddingId(id: string) : Observable<Wedding> {
+		return (this.http.get<Wedding>(this.weddingUrl + id));
+	}
+
+	getWeddingByCompanyId(weddingCompanyId: string) : Observable<Wedding[]> {
+		return (this.http.get<Wedding[]>(this.weddingUrl + "?weddingCompanyId" + weddingCompanyId));
+	}
+
+	getWeddingByWeddingDate(weddingDate: string) : Observable<Wedding[]> {
+			return(this.http.get<Wedding[]>(this.weddingUrl + "?weddingDate" + weddingDate));
+	}
+
+	getWeddingByWeddingName(weddingName: string) : Observable<Wedding[]> {
+		return(this.http.get<Wedding[]>(this.weddingUrl + "?weddingName" + weddingName));
+	}
+
+	getWeddingByWeddingReturnByDate(weddingReturnByDate: string) : Observable<Wedding[]> {
+		return(this.http.get<Wedding[]>(this.weddingUrl + "?weddingReturnByDate" + weddingReturnByDate));
+	}
+
+	getAllWeddings() : Observable<Wedding[]> {
+		return(this.http.get<Wedding[]>(this.weddingUrl));
 	}
 }

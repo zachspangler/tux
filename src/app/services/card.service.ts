@@ -12,9 +12,24 @@ export class CardService {
 
 	private cardUrl = "api/card/";
 
-
 	createCard(card: Card) : Observable<Status> {
 		return(this.http.post<Status>(this.cardUrl, card))
+	}
+
+	getCardByCardId(id: string) : Observable<Card> {
+		return(this.http.get<Card>(this.cardUrl + id));
+	}
+
+	getCardByProfileId(cardProfileId: string) : Observable<Card[]> {
+		return(this.http.get<Card[]>(this.cardUrl + "?cardProfileId" + cardProfileId));
+	}
+
+	getCardByWeddingId(cardWeddingId: string) : Observable<Card[]> {
+		return(this.http.get<Card[]>(this.cardUrl + "?cardWeddingId" + cardWeddingId));
+	}
+
+	getAllCards() : Observable<Card[]> {
+		return(this.http.get<Card[]>(this.cardUrl));
 	}
 
 }

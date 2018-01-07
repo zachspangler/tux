@@ -429,7 +429,7 @@ class Wedding implements \JsonSerializable {
 	}
 
 	/**
-	 * gets an array of weddings based on the car return by date date
+	 * gets an array of weddings based on the card return by date date
 	 *
 	 * @param \PDO $pdo connection object
 	 * @param string $sunriseReturnByReturnDate beginning date to search for

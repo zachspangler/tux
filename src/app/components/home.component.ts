@@ -27,6 +27,6 @@ export class HomeComponent implements OnInit {
 	}
 
 	switchWedding(wedding : Wedding) : void {
-		this.router.navigate(["/wedding/", this.weddings.weddingId]);
+		this.router.navigate(["/wedding/", wedding.weddingId]);
 	}
 }
